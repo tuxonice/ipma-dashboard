@@ -1,0 +1,226 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'seismic' %}
+{% block title %}{{ 'seismic.title'|trans }}{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""/>
+<style>
+    #seismic-map {
+        height: 60vh;
+        min-height: 380px;
+        border-radius: .5rem;
+        z-index: 0;
+    }
+    .seismic-swatch {
+        display: inline-block;
+        width: .75rem;
+        height: .75rem;
+        border-radius: 999px;
+        border: 1px solid rgba(0,0,0,.1);
+        margin-right: .25rem;
+        vertical-align: -1px;
+    }
+    .seismic-mag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.4rem;
+        padding: .15rem .45rem;
+        border-radius: .375rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-activity text-danger me-2" aria-hidden="true"></i>{{ 'seismic.heading'|trans }}
+            </h1>
+            <p class="text-body-secondary mb-0">
+                {{ 'seismic.subtitle'|trans({ '%area%': area_label|trans }) }}
+                {% if last_activity %}
+                    <span class="ms-1">{{ 'seismic.last_activity'|trans({ '%datetime%': last_activity|date('Y-m-d H:i') }) }}</span>
+                {% endif %}
+                {% if update_date %}
+                    <span class="ms-1">{{ 'common.feed_updated_at_utc'|trans({ '%datetime%': update_date|date('Y-m-d H:i') }) }}</span>
+                {% endif %}
+            </p>
+        </div>
+        <div class="btn-group" role="group" aria-label="{{ 'seismic.heading'|trans }}">
+            {% for tab in area_tabs %}
+                <a href="{{ path('seismic_index', { area: tab.key }) }}"
+                   class="btn {{ tab.active ? 'btn-primary' : 'btn-outline-secondary' }}"
+                   {% if tab.active %}aria-current="page"{% endif %}>
+                    {{ tab.label|trans }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+            {{ 'seismic.load_error'|trans }}{% if app_debug %}<code>{{ error }}</code>{% endif %}
+        </div>
+    {% else %}
+        <div class="row row-cols-2 row-cols-md-6 g-3 mb-4">
+            {% for item in legend %}
+                <div class="col">
+                    <div class="card h-100 border-start border-3"
+                         style="border-left-color: {{ item.color }} !important;">
+                        <div class="card-body py-3">
+                            <div class="small text-body-secondary">
+                                <span class="seismic-swatch" style="background: {{ item.color }};"></span>
+                                {{ item.label|trans }}
+                            </div>
+                            <div class="h4 mb-0">
+                                {{ item.count }}
+                                <span class="text-body-secondary small fw-normal">{{ 'seismic.events'|trans }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if events_count == 0 %}
+            <div class="alert alert-warning" role="alert">
+                {{ 'seismic.no_events'|trans }}
+            </div>
+        {% else %}
+            <div id="seismic-map" role="img" aria-label="{{ 'seismic.map_aria'|trans }}" class="mb-4"></div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-body-secondary d-flex justify-content-between align-items-center">
+                    <strong>{{ 'seismic.recent_events'|trans }}</strong>
+                    <span class="text-body-secondary small">
+                        {{ (events_count == 1 ? 'seismic.events_count_one' : 'seismic.events_count_many')|trans({ '%count%': events_count }) }}
+                        {% if unknown_count > 0 %}
+                            <span class="ms-2">{{ 'seismic.without_magnitude'|trans({ '%count%': unknown_count }) }}</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'seismic.col_time'|trans }}</th>
+                                <th scope="col" class="text-center">{{ 'seismic.col_magnitude'|trans }}</th>
+                                <th scope="col" class="text-end">{{ 'seismic.col_depth'|trans }}</th>
+                                <th scope="col">{{ 'seismic.col_region'|trans }}</th>
+                                <th scope="col" class="text-end">{{ 'seismic.col_lat'|trans }}</th>
+                                <th scope="col" class="text-end">{{ 'seismic.col_lng'|trans }}</th>
+                                <th scope="col" class="text-center">{{ 'seismic.col_sensed'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in events %}
+                                <tr>
+                                    <td class="text-nowrap">{{ event.time|replace({'T': ' '}) }}</td>
+                                    <td class="text-center">
+                                        {% if event.magnitude is null %}
+                                            <span class="text-body-secondary">–</span>
+                                        {% else %}
+                                            <span class="seismic-mag" style="background: {{ event.color }};"
+                                                  title="{{ event.level_label|trans }}{% if event.mag_type %} ({{ event.mag_type }}){% endif %}">
+                                                {{ event.magnitude|number_format(1) }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">{{ event.depth }}</td>
+                                    <td>
+                                        {{ event.region }}
+                                        {% if event.location %}
+                                            <span class="text-body-secondary small">— {{ event.location }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end font-monospace small">{{ event.lat|number_format(3) }}</td>
+                                    <td class="text-end font-monospace small">{{ event.lng|number_format(3) }}</td>
+                                    <td class="text-center">
+                                        {% if event.sensed %}
+                                            <i class="bi bi-check-circle-fill text-success" aria-label="{{ 'seismic.sensed'|trans }}" aria-hidden="true"></i>
+                                        {% else %}
+                                            <span class="text-body-secondary">–</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+{% if not error and events_count > 0 %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+<script id="seismic-data" type="application/json">{{ features_json|raw }}</script>
+<script id="seismic-i18n" type="application/json">{{ {
+    no_magnitude: 'seismic.no_magnitude'|trans,
+}|json_encode|raw }}</script>
+<script>
+    (function () {
+        var features = JSON.parse(document.getElementById('seismic-data').textContent);
+        var i18n = JSON.parse(document.getElementById('seismic-i18n').textContent);
+
+        var defaultCenter = {{ area == 'azores' ? '[37.7, -25.7]' : '[39.5, -8.0]' }};
+        var defaultZoom = {{ area == 'azores' ? 7 : 6 }};
+
+        var map = L.map('seismic-map', {
+            center: defaultCenter,
+            zoom: defaultZoom,
+            scrollWheelZoom: false,
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+
+        function escapeHtml(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
+            });
+        }
+
+        var bounds = [];
+        features.forEach(function (f) {
+            var marker = L.circleMarker([f.lat, f.lng], {
+                radius: f.radius,
+                weight: 1,
+                color: '#ffffff',
+                fillColor: f.color,
+                fillOpacity: 0.85,
+            });
+            var magText = (f.magnitude == null)
+                ? i18n.no_magnitude
+                : ('M ' + f.magnitude.toFixed(1) + (f.mag_type ? ' (' + escapeHtml(f.mag_type) + ')' : ''));
+            marker.bindPopup(
+                '<strong>' + escapeHtml(f.level_label) + '</strong>'
+                + '<div>' + magText + '</div>'
+                + '<div class="small text-body-secondary">' + escapeHtml(f.region) + '</div>'
+                + '<div class="small text-body-secondary">' + escapeHtml(f.time.replace('T', ' ')) + ' UTC · ' + f.depth + ' km</div>'
+            );
+            marker.addTo(map);
+            bounds.push([f.lat, f.lng]);
+        });
+
+        if (bounds.length > 0) {
+            map.fitBounds(bounds, { padding: [20, 20], maxZoom: 8 });
+        }
+    })();
+</script>
+{% endif %}
+{% endblock %}

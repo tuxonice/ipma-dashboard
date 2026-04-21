@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'sea' %}
+{% block title %}{{ location ? location.name : ('common.unknown'|trans) }} · {{ 'nav.brand'|trans }}{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('home') }}">{{ 'common.home'|trans }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('sea_index') }}">{{ 'sea.breadcrumb'|trans }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ location ? location.name : ('common.unknown'|trans) }}
+            </li>
+        </ol>
+    </nav>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+            {{ 'sea.could_not_load_location'|trans }}{% if app_debug %}<code>{{ error }}</code>{% endif %}
+        </div>
+    {% elseif location %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h1 class="h3 mb-1">
+                    <i class="bi bi-water text-primary me-2" aria-hidden="true"></i>{{ location.name }}
+                </h1>
+                <p class="text-body-secondary mb-0">
+                    {{ 'sea.coordinates_intro'|trans({ '%region%': region_label|trans }) }}
+                    {{ location.latitude|number_format(4) }}, {{ location.longitude|number_format(4) }}
+                </p>
+            </div>
+        </div>
+
+        <section aria-labelledby="sea-forecast-heading">
+            <div class="d-flex flex-wrap align-items-baseline justify-content-between mb-3 gap-2">
+                <h2 id="sea-forecast-heading" class="h4 mb-0">
+                    <i class="bi bi-calendar-week me-2 text-primary" aria-hidden="true"></i>{{ 'sea.forecast_heading'|trans }}
+                </h2>
+                {% if updated_at %}
+                    <span class="small text-body-secondary">
+                        {{ 'common.updated'|trans }} {{ updated_at|date('Y-m-d H:i', timezone) }}
+                        <span class="text-body-tertiary">({{ timezone }})</span>
+                    </span>
+                {% endif %}
+            </div>
+
+            {% if forecast_error %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+                    {{ 'sea.could_not_load_forecast'|trans }}{% if app_debug %}<code>{{ forecast_error }}</code>{% endif %}
+                </div>
+            {% elseif days is empty %}
+                <div class="alert alert-warning" role="alert">
+                    {{ 'sea.no_forecast'|trans }}
+                </div>
+            {% else %}
+                <div class="row row-cols-1 row-cols-md-3 g-3">
+                    {% for day in days %}
+                        <div class="col">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-primary text-white">
+                                    <div class="text-uppercase small">{{ ('common.weekday_short.' ~ day.forecast_date|date('N'))|trans }}</div>
+                                    <div class="fw-semibold">{{ day.forecast_date|date('j') }} {{ ('common.month_short.' ~ day.forecast_date|date('n'))|trans }} {{ day.forecast_date|date('Y') }}</div>
+                                </div>
+                                <div class="card-body">
+                                    <dl class="row mb-0 small">
+                                        <dt class="col-6">
+                                            <i class="bi bi-tsunami text-info me-1" aria-hidden="true"></i>{{ 'sea.wave_height'|trans }}
+                                        </dt>
+                                        <dd class="col-6 text-end">
+                                            <strong>{{ day.wave_high_min|number_format(1) }}–{{ day.wave_high_max|number_format(1) }} m</strong>
+                                        </dd>
+
+                                        <dt class="col-6">
+                                            <i class="bi bi-arrow-repeat text-secondary me-1" aria-hidden="true"></i>{{ 'sea.period'|trans }}
+                                        </dt>
+                                        <dd class="col-6 text-end">
+                                            {{ day.wave_period_min|number_format(1) }}–{{ day.wave_period_max|number_format(1) }} s
+                                        </dd>
+
+                                        <dt class="col-6">
+                                            <i class="bi bi-compass text-secondary me-1" aria-hidden="true"></i>{{ 'sea.direction'|trans }}
+                                        </dt>
+                                        <dd class="col-6 text-end">
+                                            <strong>{{ day.wave_dir }}</strong>
+                                            <span class="text-body-secondary">· {{ day.wave_dir_label|trans }}</span>
+                                        </dd>
+
+                                        <dt class="col-6">
+                                            <i class="bi bi-water text-primary me-1" aria-hidden="true"></i>{{ 'sea.total_sea'|trans }}
+                                        </dt>
+                                        <dd class="col-6 text-end">
+                                            {{ day.total_sea_min|number_format(1) }}–{{ day.total_sea_max|number_format(1) }} m
+                                        </dd>
+
+                                        <dt class="col-6">
+                                            <i class="bi bi-thermometer-half text-danger me-1" aria-hidden="true"></i>{{ 'sea.sst'|trans }}
+                                        </dt>
+                                        <dd class="col-6 text-end">
+                                            {{ day.sst_min|number_format(1) }}–{{ day.sst_max|number_format(1) }} °C
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </section>
+    {% endif %}
+{% endblock %}

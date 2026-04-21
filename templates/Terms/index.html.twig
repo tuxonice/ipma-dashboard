@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+{% set active = 'terms' %}
+
+{% block title %}{{ 'terms.title'|trans }}{% endblock %}
+
+{% block body %}
+    <h1 class="mb-3">
+        <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>{{ 'terms.heading'|trans }}
+    </h1>
+    <p class="text-body-secondary mb-4">{{ 'terms.last_updated'|trans({'%date%': 'May 2026'}) }}</p>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="h5">{{ 'terms.section_usage_title'|trans }}</h2>
+            <p>{{ 'terms.section_usage_body'|trans|raw }}</p>
+
+            <h2 class="h5 mt-4">{{ 'terms.section_data_title'|trans }}</h2>
+            <p>{{ 'terms.section_data_body'|trans|raw }}</p>
+
+            <h2 class="h5 mt-4">{{ 'terms.section_accuracy_title'|trans }}</h2>
+            <p>{{ 'terms.section_accuracy_body'|trans }}</p>
+
+            <h2 class="h5 mt-4">{{ 'terms.section_liability_title'|trans }}</h2>
+            <p>{{ 'terms.section_liability_body'|trans }}</p>
+
+            <h2 class="h5 mt-4">{{ 'terms.section_cookies_title'|trans }}</h2>
+            <p>{{ 'terms.section_cookies_body'|trans }}</p>
+
+            <h2 class="h5 mt-4">{{ 'terms.section_attribution_title'|trans }}</h2>
+            <p>{{ 'terms.section_attribution_body'|trans|raw }}</p>
+
+            <h2 class="h5 mt-4">{{ 'terms.section_copyright_title'|trans }}</h2>
+            <p>{{ 'terms.section_copyright_body'|trans|raw }}</p>
+
+            <h2 class="h5 mt-4">{{ 'terms.section_privacy_title'|trans }}</h2>
+            <p>{{ 'terms.section_privacy_body'|trans }}</p>
+
+            <h2 class="h5 mt-4">{{ 'terms.section_changes_title'|trans }}</h2>
+            <p>{{ 'terms.section_changes_body'|trans }}</p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,9 @@
+/vendor/
+/var/
+composer.lock
+.env.local
+.idea/
+.vscode/
+*.log
+.DS_Store
+/.env

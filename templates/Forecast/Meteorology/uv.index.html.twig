@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'uv' %}
+{% block title %}{{ 'uv.title'|trans }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .uv-cell {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.5rem;
+        padding: .15rem .5rem;
+        border-radius: .375rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+    .uv-swatch {
+        display: inline-block;
+        width: .75rem;
+        height: .75rem;
+        border-radius: 999px;
+        border: 1px solid rgba(0,0,0,.1);
+        margin-right: .35rem;
+        vertical-align: -1px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-brightness-high text-warning me-2" aria-hidden="true"></i>{{ 'uv.heading'|trans }}
+            </h1>
+            <p class="text-body-secondary mb-0">
+                {{ 'uv.subtitle'|trans }}
+                {% if time_interval %}
+                    <span class="ms-1">{{ 'uv.peak_interval'|trans({ '%interval%': time_interval }) }}</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+            {{ 'uv.load_error'|trans }}{% if app_debug %}<code>{{ error }}</code>{% endif %}
+        </div>
+    {% else %}
+        <div class="row row-cols-2 row-cols-md-5 g-3 mb-4">
+            {% for item in legend %}
+                <div class="col">
+                    <div class="card h-100 border-start border-3"
+                         style="border-left-color: {{ item.color }} !important;">
+                        <div class="card-body py-3">
+                            <div class="small text-body-secondary">
+                                <span class="uv-swatch" style="background: {{ item.color }};"></span>
+                                {{ item.label|trans }}
+                            </div>
+                            <div class="h4 mb-1">
+                                {{ item.count }}
+                                <span class="text-body-secondary small fw-normal">{{ 'uv.readings'|trans }}</span>
+                            </div>
+                            <div class="small text-body-secondary">{{ item.advice|trans }}</div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if regions is empty %}
+            <div class="alert alert-warning" role="alert">
+                {{ 'uv.no_data'|trans }}
+            </div>
+        {% else %}
+            {% for region in regions %}
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-body-secondary">
+                        <strong>{{ region.label|trans }}</strong>
+                        <span class="text-body-secondary small ms-2">
+                            {{ region.rows|length }} {{ (region.rows|length == 1 ? 'uv.location_one' : 'uv.location_many')|trans }}
+                        </span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{{ 'uv.col_location'|trans }}</th>
+                                    {% for date in dates %}
+                                        <th scope="col" class="text-center">
+                                            {{ ('common.weekday_short.' ~ date|date('N'))|trans }}, {{ date|date('j') }} {{ ('common.month_short.' ~ date|date('n'))|trans }}
+                                        </th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in region.rows %}
+                                    <tr>
+                                        <th scope="row" class="fw-normal">
+                                            <a href="{{ path('locations_show', { globalIdLocal: row.global_id_local }) }}"
+                                               class="text-decoration-none">
+                                                {{ row.name }}
+                                            </a>
+                                        </th>
+                                        {% for cell in row.cells %}
+                                            <td class="text-center">
+                                                {% if cell is null %}
+                                                    <span class="text-body-secondary">–</span>
+                                                {% else %}
+                                                    <span class="uv-cell"
+                                                          style="background: {{ cell.color }}; color: {{ cell.text }};"
+                                                          title="{{ cell.level_label|trans }}">
+                                                        {{ cell.uv|number_format(1) }}
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+{% endblock %}

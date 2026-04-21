@@ -1,0 +1,218 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'outlook' %}
+{% block title %}{{ 'outlook.title'|trans }}{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""/>
+<style>
+    #outlook-map {
+        height: 60vh;
+        min-height: 380px;
+        border-radius: .5rem;
+        z-index: 0;
+    }
+    .temp-cell {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.4rem;
+        padding: .15rem .5rem;
+        border-radius: .375rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+    .temp-swatch {
+        display: inline-block;
+        width: .65rem;
+        height: .65rem;
+        border-radius: 999px;
+        border: 1px solid rgba(0,0,0,.1);
+        margin-right: .25rem;
+        vertical-align: -1px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-cloud-sun text-primary me-2" aria-hidden="true"></i>{{ 'outlook.heading'|trans }}
+            </h1>
+            <p class="text-body-secondary mb-0">
+                {{ 'outlook.subtitle'|trans }}
+                {% if forecast_date %}
+                    <span class="ms-1">{{ 'outlook.forecast_for'|trans({ '%date%': forecast_date|date('Y-m-d') }) }}</span>
+                {% endif %}
+            </p>
+        </div>
+        <div class="btn-group" role="group" aria-label="{{ 'outlook.heading'|trans }}">
+            {% for tab in day_tabs %}
+                <a href="{{ path('outlook_index', { day: tab.key }) }}"
+                   class="btn {{ tab.active ? 'btn-primary' : 'btn-outline-secondary' }}"
+                   {% if tab.active %}aria-current="page"{% endif %}>
+                    {{ tab.label|trans }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+            {{ 'outlook.load_error'|trans }}{% if app_debug %}<code>{{ error }}</code>{% endif %}
+        </div>
+    {% elseif total_locations == 0 %}
+        <div class="alert alert-warning" role="alert">
+            {{ 'outlook.no_data'|trans }}
+        </div>
+    {% else %}
+        <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+            <span class="small text-body-secondary">{{ 'outlook.tmax_legend'|trans }}</span>
+            {% for band in temperature_legend %}
+                <span class="small">
+                    <span class="temp-swatch" style="background: {{ band.color }};" aria-hidden="true"></span>
+                    {{ band.label }} °C
+                </span>
+            {% endfor %}
+        </div>
+
+        <div id="outlook-map" role="img" aria-label="{{ 'outlook.map_aria'|trans }}" class="mb-4"></div>
+
+        {% for region in regions %}
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-body-secondary d-flex flex-wrap align-items-center justify-content-between gap-2">
+                    <div>
+                        <strong>{{ region.label|trans }}</strong>
+                        <span class="text-body-secondary small ms-2">
+                            {{ region.rows|length }} {{ (region.rows|length == 1 ? 'outlook.location_one' : 'outlook.location_many')|trans }}
+                        </span>
+                    </div>
+                    {% if region.update_at_local %}
+                        <span class="text-body-secondary small">
+                            {{ 'common.feed_updated_at'|trans({ '%datetime%': region.update_at_local|date('Y-m-d H:i', region.timezone) }) }}
+                            <span class="text-body-tertiary">({{ region.timezone }})</span>
+                        </span>
+                    {% endif %}
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th scope="col">{{ 'outlook.col_location'|trans }}</th>
+                            <th scope="col">{{ 'outlook.col_weather'|trans }}</th>
+                            <th scope="col" class="text-center">{{ 'outlook.col_tmin'|trans }}</th>
+                            <th scope="col" class="text-center">{{ 'outlook.col_tmax'|trans }}</th>
+                            <th scope="col" class="text-center">{{ 'outlook.col_uv'|trans }}</th>
+                            <th scope="col" class="text-end">{{ 'outlook.col_rain_prob'|trans }}</th>
+                            <th scope="col">{{ 'outlook.col_wind'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in region.rows %}
+                                <tr>
+                                    <th scope="row" class="fw-normal">
+                                        <a href="{{ path('locations_show', { globalIdLocal: row.global_id_local }) }}"
+                                           class="text-decoration-none">
+                                            {{ row.name }}
+                                        </a>
+                                    </th>
+                                    <td>
+                                        <i class="bi {{ row.weather_icon }} me-1" aria-hidden="true"></i>{{ row.weather_label|trans }}
+                                        {% if row.rain_intensity %}
+                                            <span class="badge text-bg-light ms-1">{{ row.rain_intensity|trans }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center text-body-secondary">{{ row.t_min|number_format(0) }}°</td>
+                                    <td class="text-center">
+                                        <span class="temp-cell"
+                                              style="background: {{ row.color }}; color: {{ row.text_color }};"
+                                              title="{{ row.temp_label }} °C">
+                                            {{ row.t_max|number_format(0) }}°
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if row.uv_index is not null %}
+                                            <span class="badge" style="background: {{ row.uv_color }}; color: {{ row.uv_text_color }};" title="{{ row.uv_label|trans }}">
+                                                {{ row.uv_index|number_format(0) }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-body-secondary">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end font-monospace">{{ row.rain_prob|number_format(0) }}%</td>
+                                    <td>{{ row.wind_dir_label|trans }} {{ row.wind_speed_label|trans }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+{% if not error and total_locations > 0 %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+<script id="outlook-data" type="application/json">{{ features_json|raw }}</script>
+<script id="outlook-i18n" type="application/json">{{ {
+    rain: 'location.rain'|trans,
+}|json_encode|raw }}</script>
+<script>
+    (function () {
+        var features = JSON.parse(document.getElementById('outlook-data').textContent);
+        var i18n = JSON.parse(document.getElementById('outlook-i18n').textContent);
+
+        var map = L.map('outlook-map', {
+            center: [39.5, -8.0],
+            zoom: 6,
+            scrollWheelZoom: false,
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+
+        function escapeHtml(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
+            });
+        }
+
+        var bounds = [];
+        features.forEach(function (f) {
+            var marker = L.circleMarker([f.lat, f.lng], {
+                radius: 7,
+                weight: 1,
+                color: '#ffffff',
+                fillColor: f.color,
+                fillOpacity: 0.9,
+            });
+            marker.bindPopup(
+                '<strong>' + escapeHtml(f.name) + '</strong>'
+                + '<div><i class="bi ' + escapeHtml(f.icon) + ' me-1" aria-hidden="true"></i>' + escapeHtml(f.weather) + '</div>'
+                + '<div class="small text-body-secondary">'
+                +   'Min ' + Math.round(f.t_min) + '° · Max ' + Math.round(f.t_max) + '° · '
+                +   Math.round(f.rain_prob) + '% ' + escapeHtml(i18n.rain.toLowerCase())
+                + '</div>'
+                + '<div class="small text-body-secondary">' + escapeHtml(f.wind) + '</div>'
+            );
+            marker.addTo(map);
+            bounds.push([f.lat, f.lng]);
+        });
+
+        if (bounds.length > 0) {
+            map.fitBounds(bounds, { padding: [20, 20], maxZoom: 8 });
+        }
+    })();
+</script>
+{% endif %}
+{% endblock %}

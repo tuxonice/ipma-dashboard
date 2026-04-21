@@ -1,0 +1,37 @@
+{# Reusable warnings banner used on the location detail page.
+
+   Expects:
+   - area_warnings: list of { warning: WeatherWarning, level: { label, color, icon } }
+#}
+{% if area_warnings is not empty %}
+    <div class="mb-4">
+        {% set highest = area_warnings|first.level %}
+        <div class="alert alert-danger d-flex align-items-start gap-3" role="alert">
+            <i class="bi {{ highest.icon }} fs-3 flex-shrink-0" aria-hidden="true"></i>
+            <div class="flex-grow-1">
+                <h2 class="h6 mb-2">
+                    {{ (area_warnings|length == 1 ? 'warning.banner_heading_one' : 'warning.banner_heading_many')|trans({ '%count%': area_warnings|length }) }}
+                </h2>
+                <ul class="list-unstyled mb-0 small">
+                    {% for item in area_warnings %}
+                        <li class="d-flex flex-wrap gap-2 mb-1">
+                            <span class="badge text-bg-{{ item.level.color }}">
+                                <i class="bi {{ item.level.icon }} me-1" aria-hidden="true"></i>
+                                {{ item.level.label|trans }}
+                            </span>
+                            <span class="fw-semibold">{{ item.warning.awarenessTypeName }}</span>
+                            <span class="text-body-secondary">
+                                {{ item.warning.startTime|date('Y-m-d H:i', item.timezone) }}
+                                &rarr;
+                                {{ item.warning.endTime|date('Y-m-d H:i', item.timezone) }}
+                            </span>
+                            {% if item.warning.text %}
+                                <span class="w-100">{{ item.warning.text }}</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endif %}

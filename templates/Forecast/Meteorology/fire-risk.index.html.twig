@@ -1,0 +1,149 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'fire_risk' %}
+{% block title %}{{ 'fire_risk.title'|trans }}{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""/>
+<style>
+    #fire-map {
+        height: 70vh;
+        min-height: 420px;
+        border-radius: .5rem;
+        z-index: 0;
+    }
+    .fire-swatch {
+        display: inline-block;
+        width: .75rem;
+        height: .75rem;
+        border-radius: 999px;
+        border: 1px solid rgba(0,0,0,.1);
+        margin-right: .25rem;
+        vertical-align: -1px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-fire text-danger me-2" aria-hidden="true"></i>{{ 'fire_risk.heading'|trans }}
+            </h1>
+            <p class="text-body-secondary mb-0">
+                {{ 'fire_risk.subtitle'|trans }}
+                {% if forecast_date %}
+                    <span class="ms-1">{{ 'fire_risk.forecast_for'|trans({ '%date%': forecast_date|date('Y-m-d') }) }}</span>
+                {% endif %}
+                {% if run_date %}
+                    <span class="ms-1">{{ 'common.model_run_at_utc'|trans({ '%datetime%': run_date|date('Y-m-d H:i') }) }}</span>
+                {% endif %}
+            </p>
+        </div>
+        <div class="btn-group" role="group" aria-label="{{ 'fire_risk.heading'|trans }}">
+            <a href="{{ path('fire_risk_index', { day: 'today' }) }}"
+               class="btn {{ day == 'today' ? 'btn-primary' : 'btn-outline-secondary' }}"
+               {% if day == 'today' %}aria-current="page"{% endif %}>
+                {{ 'fire_risk.day_today'|trans }}
+            </a>
+            <a href="{{ path('fire_risk_index', { day: 'tomorrow' }) }}"
+               class="btn {{ day == 'tomorrow' ? 'btn-primary' : 'btn-outline-secondary' }}"
+               {% if day == 'tomorrow' %}aria-current="page"{% endif %}>
+                {{ 'fire_risk.day_tomorrow'|trans }}
+            </a>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+            {{ 'fire_risk.load_error'|trans }}{% if app_debug %}<code>{{ error }}</code>{% endif %}
+        </div>
+    {% else %}
+        <div class="row row-cols-2 row-cols-md-5 g-3 mb-4">
+            {% for item in legend %}
+                <div class="col">
+                    <div class="card h-100 border-start border-3"
+                         style="border-left-color: {{ item.color }} !important;">
+                        <div class="card-body py-3">
+                            <div class="small text-body-secondary">
+                                <span class="fire-swatch" style="background: {{ item.color }};" aria-hidden="true"></span>
+                                {{ item.label|trans }}
+                            </div>
+                            <div class="h4 mb-0">
+                                {{ item.count }}
+                                <span class="text-body-secondary small fw-normal">{{ 'fire_risk.municipalities'|trans }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if features_count == 0 %}
+            <div class="alert alert-warning" role="alert">
+                {{ 'fire_risk.no_data'|trans }}
+            </div>
+        {% else %}
+            <div id="fire-map" role="img" aria-label="{{ 'fire_risk.map_aria'|trans }}"></div>
+            <p class="small text-body-secondary mt-3 mb-0">
+                {{ 'fire_risk.showing'|trans({ '%count%': features_count }) }}
+            </p>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+{% if not error and features_count > 0 %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+<script id="fire-data" type="application/json">{{ features_json|raw }}</script>
+<script>
+    (function () {
+        var features = JSON.parse(document.getElementById('fire-data').textContent);
+
+        var map = L.map('fire-map', {
+            center: [39.5, -8.0],
+            zoom: 7,
+            scrollWheelZoom: false,
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+
+        function escapeHtml(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
+            });
+        }
+
+        var bounds = [];
+        features.forEach(function (f) {
+            var marker = L.circleMarker([f.lat, f.lng], {
+                radius: 6,
+                weight: 1,
+                color: '#ffffff',
+                fillColor: f.color,
+                fillOpacity: 0.85,
+            });
+            marker.bindPopup(
+                '<strong>' + escapeHtml(f.level_label) + '</strong>'
+                + '<div class="small text-body-secondary">DICO ' + escapeHtml(f.dico) + '</div>'
+            );
+            marker.addTo(map);
+            bounds.push([f.lat, f.lng]);
+        });
+
+        if (bounds.length > 0) {
+            map.fitBounds(bounds, { padding: [20, 20] });
+        }
+    })();
+</script>
+{% endif %}
+{% endblock %}

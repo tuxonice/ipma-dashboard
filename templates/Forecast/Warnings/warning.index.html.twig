@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'warnings' %}
+{% block title %}{{ 'warning.title'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="mb-4">
+        <h1 class="h3 mb-1">
+            <i class="bi bi-exclamation-triangle-fill text-warning me-2" aria-hidden="true"></i>{{ 'warning.heading'|trans }}
+        </h1>
+        <p class="text-body-secondary mb-0">
+            {{ 'warning.subtitle'|trans }}
+        </p>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+            {{ 'warning.load_error'|trans }}{% if app_debug %}<code>{{ error }}</code>{% endif %}
+        </div>
+    {% elseif grouped is empty %}
+        <div class="alert alert-success" role="alert">
+            <i class="bi bi-shield-check me-2" aria-hidden="true"></i>
+            {{ 'warning.all_green'|trans }}
+        </div>
+    {% else %}
+        <div class="row g-3">
+            {% for area, items in grouped %}
+                {% set top = items|first.level %}
+                <div class="col-12 col-lg-6">
+                    <div class="card h-100 border-{{ top.color }}">
+                        <div class="card-header bg-black text-white d-flex justify-content-between">
+                            <span class="fw-semibold">
+                                <i class="bi bi-geo-alt-fill me-1" aria-hidden="true"></i>{{ area }}
+                            </span>
+                            <span class="badge text-bg-light text-dark">
+                                {{ (items|length == 1 ? 'warning.count_one' : 'warning.count_many')|trans({ '%count%': items|length }) }}
+                            </span>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            {% for item in items %}
+                                <li class="list-group-item">
+                                    <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                                        <span class="badge text-bg-{{ item.level.color }}">
+                                            <i class="bi {{ item.level.icon }} me-1" aria-hidden="true"></i>
+                                            {{ item.level.label|trans }}
+                                        </span>
+                                        <span class="fw-semibold">{{ item.warning.awarenessTypeName }}</span>
+                                    </div>
+                                    <div class="small text-body-secondary mb-1">
+                                        {{ item.warning.startTime|date('Y-m-d H:i', item.timezone) }}
+                                        &rarr;
+                                        {{ item.warning.endTime|date('Y-m-d H:i', item.timezone) }} ({{ item.timezone }})
+                                    </div>
+                                    {% if item.warning.text %}
+                                        <div class="small">{{ item.warning.text }}</div>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'climate' %}
+{% block title %}Climate · IPMA Dashboard{% endblock %}
+
+{% block body %}
+    <div class="mb-4">
+        <h1 class="h3 mb-1">
+            <i class="bi bi-thermometer-half text-primary me-2" aria-hidden="true"></i>Climate observations
+        </h1>
+        <p class="text-body-secondary mb-0">
+            Daily climate series published by IPMA per municipality (CSV).
+            Dataset currently covers mainland Portugal only.
+        </p>
+    </div>
+
+    <div class="mb-3">
+        <input type="search"
+               id="climate-filter"
+               class="form-control"
+               placeholder="Filter by municipality name…"
+               aria-label="Filter municipalities">
+    </div>
+
+    {% if districts is empty %}
+        <div class="alert alert-warning" role="alert">No municipalities available.</div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3" id="climate-districts">
+            {% for district in districts %}
+                <div class="col" data-district-label="{{ district.label|lower }}">
+                    <div class="card h-100">
+                        <div class="card-header bg-body-tertiary">
+                            <strong>{{ district.label }}</strong>
+                            <span class="text-body-secondary small">
+                                · {{ district.locations|length }} municipalit{{ district.locations|length == 1 ? 'y' : 'ies' }}
+                            </span>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            {% for location in district.locations %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2"
+                                    data-municipality="{{ location.name|lower }}">
+                                    <span>
+                                        <i class="bi bi-geo-alt text-body-secondary me-1" aria-hidden="true"></i>{{ location.name }}
+                                    </span>
+                                    <span class="btn-group btn-group-sm" role="group" aria-label="Climate metrics">
+                                        <a href="{{ path('climate_max_temperature', { globalIdLocal: location.globalIdLocal }) }}"
+                                           class="btn btn-outline-danger" title="Daily max temperature">
+                                            <i class="bi bi-thermometer-high me-1" aria-hidden="true"></i>Max
+                                        </a>
+                                        <a href="{{ path('climate_min_temperature', { globalIdLocal: location.globalIdLocal }) }}"
+                                           class="btn btn-outline-primary" title="Daily min temperature">
+                                            <i class="bi bi-thermometer-low me-1" aria-hidden="true"></i>Min
+                                        </a>
+                                        <a href="{{ path('climate_precipitation', { globalIdLocal: location.globalIdLocal }) }}"
+                                           class="btn btn-outline-info" title="Total daily precipitation">
+                                            <i class="bi bi-cloud-rain-heavy me-1" aria-hidden="true"></i>Rain
+                                        </a>
+                                        <a href="{{ path('climate_evapotranspiration', { globalIdLocal: location.globalIdLocal }) }}"
+                                           class="btn btn-outline-success" title="Daily reference evapotranspiration (ET0)">
+                                            <i class="bi bi-droplet-half me-1" aria-hidden="true"></i>ET<sub>0</sub>
+                                        </a>
+                                        <a href="{{ path('climate_pdsi', { globalIdLocal: location.globalIdLocal }) }}"
+                                           class="btn btn-outline-warning" title="Palmer Drought Severity Index (monthly)">
+                                            <i class="bi bi-droplet me-1" aria-hidden="true"></i>PDSI
+                                        </a>
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    (function () {
+        var input = document.getElementById('climate-filter');
+        if (!input) { return; }
+
+        input.addEventListener('input', function () {
+            var q = input.value.trim().toLowerCase();
+            document.querySelectorAll('#climate-districts > .col').forEach(function (col) {
+                var items = col.querySelectorAll('[data-municipality]');
+                var anyVisible = false;
+                items.forEach(function (item) {
+                    var match = q === '' || item.getAttribute('data-municipality').indexOf(q) !== -1;
+                    item.style.display = match ? '' : 'none';
+                    if (match) { anyVisible = true; }
+                });
+                col.style.display = anyVisible ? '' : 'none';
+            });
+        });
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,184 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'climate' %}
+{% block title %}{{ location.name }} — PDSI · IPMA Dashboard{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .pdsi-cell {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 3.5rem;
+        padding: .15rem .5rem;
+        border-radius: .375rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+    .pdsi-swatch {
+        display: inline-block;
+        width: .75rem;
+        height: .75rem;
+        border-radius: 999px;
+        border: 1px solid rgba(0,0,0,.1);
+        margin-right: .25rem;
+        vertical-align: -1px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('climate_index') }}">Climate</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ location.name }} — PDSI
+            </li>
+        </ol>
+    </nav>
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-droplet text-warning me-2" aria-hidden="true"></i>
+                {{ location.name }} — Palmer Drought Severity Index (monthly)
+            </h1>
+            <p class="text-body-secondary mb-0">
+                {{ district_label }} · DICO {{ dico }} ·
+                <a href="{{ path('locations_show', { globalIdLocal: location.globalIdLocal }) }}">
+                    Forecast for {{ location.name }}
+                </a>
+                ·
+                <a href="{{ path('climate_max_temperature', { globalIdLocal: location.globalIdLocal }) }}">Max temperature</a>
+                ·
+                <a href="{{ path('climate_min_temperature', { globalIdLocal: location.globalIdLocal }) }}">Min temperature</a>
+                ·
+                <a href="{{ path('climate_precipitation', { globalIdLocal: location.globalIdLocal }) }}">Precipitation</a>
+                ·
+                <a href="{{ path('climate_evapotranspiration', { globalIdLocal: location.globalIdLocal }) }}">Evapotranspiration</a>
+            </p>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+            Could not load the PDSI series: {% if app_debug %}<code>{{ error }}</code>{% endif %}
+        </div>
+    {% elseif records is empty %}
+        <div class="alert alert-warning" role="alert">
+            IPMA returned no PDSI records for this municipality.
+        </div>
+    {% else %}
+        {% set point_count = chart.points|length %}
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-2 mb-4">
+            {% for item in legend %}
+                {% if item.count > 0 %}
+                    <div class="col">
+                        <div class="card h-100 border-start border-3"
+                             style="border-left-color: {{ item.color }} !important;">
+                            <div class="card-body py-2">
+                                <div class="small text-body-secondary">
+                                    <span class="pdsi-swatch" style="background: {{ item.color }};"></span>
+                                    {{ item.label }}
+                                </div>
+                                <div class="h5 mb-0">
+                                    {{ item.count }}
+                                    <span class="text-body-secondary small fw-normal">months</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        {% if point_count > 1 and chart.max is not null and chart.min is not null %}
+            {% set chart_width = 900 %}
+            {% set chart_height = 220 %}
+            {% set padding_x = 32 %}
+            {% set padding_y = 16 %}
+            {% set span = chart.max - chart.min %}
+            {% if span == 0 %}{% set span = 1 %}{% endif %}
+            {% set zero_y = chart_height - padding_y - ((0 - chart.min) / span) * (chart_height - padding_y * 2) %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h6 text-body-secondary text-uppercase mb-3">Trend (monthly mean PDSI)</h2>
+                    <svg viewBox="0 0 {{ chart_width }} {{ chart_height }}"
+                         role="img"
+                         aria-label="{{ 'chart.pdsi_trend'|trans({'%location%': location.name}) }}"
+                         class="w-100" style="height: {{ chart_height }}px;">
+                        {% if zero_y >= padding_y and zero_y <= chart_height - padding_y %}
+                            <line x1="{{ padding_x }}" x2="{{ chart_width - padding_x }}"
+                                  y1="{{ zero_y|number_format(2, '.', '') }}" y2="{{ zero_y|number_format(2, '.', '') }}"
+                                  stroke="#adb5bd" stroke-dasharray="4 4" stroke-width="1"/>
+                        {% endif %}
+                        {% set polyline = [] %}
+                        {% for point in chart.points %}
+                            {% set x = padding_x + (loop.index0 / (point_count - 1)) * (chart_width - padding_x * 2) %}
+                            {% set y = chart_height - padding_y - ((point.value - chart.min) / span) * (chart_height - padding_y * 2) %}
+                            {% set polyline = polyline|merge([(x|number_format(2, '.', '')) ~ ',' ~ (y|number_format(2, '.', ''))]) %}
+                        {% endfor %}
+                        <polyline fill="none" stroke="#fd7e14" stroke-width="1.5"
+                                  points="{{ polyline|join(' ') }}"/>
+                    </svg>
+                    <div class="d-flex justify-content-between small text-body-secondary mt-2">
+                        <span>{{ chart.points|first.date }}</span>
+                        <span>{{ chart.points|last.date }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="card">
+            <div class="card-header bg-body-tertiary d-flex justify-content-between align-items-center">
+                <span><strong>Monthly series</strong></span>
+                <span class="small text-body-secondary">
+                    {{ records|first.date }} → {{ records|last.date }}
+                </span>
+            </div>
+            <div class="table-responsive" style="max-height: 28rem;">
+                <table class="table table-sm table-striped mb-0 align-middle">
+                    <thead class="sticky-top bg-body-tertiary">
+                        <tr>
+                            <th scope="col">Month</th>
+                            <th scope="col" class="text-center">Category</th>
+                            <th scope="col" class="text-end">Mean</th>
+                            <th scope="col" class="text-end">Min</th>
+                            <th scope="col" class="text-end">Max</th>
+                            <th scope="col" class="text-end">Range</th>
+                            <th scope="col" class="text-end">Std</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                            {% set r = row.record %}
+                            <tr>
+                                <td>{{ r.date }}</td>
+                                <td class="text-center">
+                                    {% if row.value is null %}
+                                        <span class="text-body-secondary">—</span>
+                                    {% else %}
+                                        <span class="pdsi-cell"
+                                              style="background: {{ row.color }}; color: {{ row.text }};"
+                                              title="{{ row.level_label }}">
+                                            {{ row.value|number_format(2) }}
+                                        </span>
+                                        <span class="small text-body-secondary ms-1">{{ row.level_label }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end fw-semibold">{{ r.mean != '' ? (r.mean|number_format(3)) : '—' }}</td>
+                                <td class="text-end">{{ r.minimum != '' ? (r.minimum|number_format(3)) : '—' }}</td>
+                                <td class="text-end">{{ r.maximum != '' ? (r.maximum|number_format(3)) : '—' }}</td>
+                                <td class="text-end">{{ r.range != '' ? (r.range|number_format(3)) : '—' }}</td>
+                                <td class="text-end">{{ r.std != '' ? (r.std|number_format(3)) : '—' }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="{{ app_locale|default('pt') }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ 'nav.brand'|trans }}{% endblock %}</title>
+
+    {# Bootstrap 5 via CDN (no local build step). #}
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    {# Inline SVG favicon — avoids a 404 on /favicon.ico without adding a route. #}
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%230d6efd' d='M6.5 2a.5.5 0 0 1 .5.5V3a.5.5 0 0 1-1 0v-.5a.5.5 0 0 1 .5-.5ZM10.5 6.207 10.854 5.854a.5.5 0 0 0-.708-.708L9.793 5.5l-.353-.354a.5.5 0 0 0-.708.708L9.086 6.207 6.5 8.793V9H4.5A2.5 2.5 0 0 0 2 11.5 2.5 2.5 0 0 0 4.5 14h7a2.5 2.5 0 1 0-.406-4.967L10.5 8.914V8.5a.5.5 0 0 0-1 0v.207L10.5 6.207Z'/%3E%3Ccircle cx='6.5' cy='6' r='3' fill='%23ffc107'/%3E%3C/svg%3E">
+
+    {# PWA #}
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+    <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="bg-body-tertiary">
+<a href="#main-content" class="visually-hidden-focusable position-absolute top-0 start-0 m-2 btn btn-primary btn-sm z-3">
+    {{ 'nav.skip_to_content'|trans }}
+</a>
+{% set nav_active = active|default('') %}
+{% set forecast_active_keys = ['outlook', 'sea', 'warnings', 'uv', 'fire_risk'] %}
+{% set observation_active_keys = ['stations', 'seismic', 'bivalves'] %}
+{% set current_locale = app_locale|default('pt') %}
+
+<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark" aria-label="{{ 'nav.main'|trans }}">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" href="{{ path('home') }}">
+            <i class="bi bi-cloud-sun me-2" aria-hidden="true"></i>{{ 'nav.brand'|trans }}
+        </a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false"
+                aria-label="{{ 'nav.toggle'|trans }}">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav ms-auto gap-lg-1 align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link {{ nav_active == 'locations' ? 'active' : '' }}"
+                       {% if nav_active == 'locations' %}aria-current="page"{% endif %}
+                       href="{{ path('locations_index') }}">
+                        <i class="bi bi-geo-alt me-1" aria-hidden="true"></i>{{ 'nav.locations'|trans }}
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ nav_active in forecast_active_keys ? 'active' : '' }}"
+                       href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-cloud-sun me-1" aria-hidden="true"></i>{{ 'nav.forecast'|trans }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item {{ nav_active == 'outlook' ? 'active' : '' }}"
+                               href="{{ path('outlook_index') }}">
+                                <i class="bi bi-cloud-sun me-2" aria-hidden="true"></i>{{ 'nav.outlook'|trans }}
+                                <span class="d-block small text-body-secondary">{{ 'nav.outlook_sub'|trans }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ nav_active == 'sea' ? 'active' : '' }}"
+                               href="{{ path('sea_index') }}">
+                                <i class="bi bi-water me-2" aria-hidden="true"></i>{{ 'nav.sea'|trans }}
+                                <span class="d-block small text-body-secondary">{{ 'nav.sea_sub'|trans }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ nav_active == 'warnings' ? 'active' : '' }}"
+                               href="{{ path('warnings_index') }}">
+                                <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ 'nav.warnings'|trans }}
+                                <span class="d-block small text-body-secondary">{{ 'nav.warnings_sub'|trans }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ nav_active == 'uv' ? 'active' : '' }}"
+                               href="{{ path('uv_index') }}">
+                                <i class="bi bi-brightness-high me-2" aria-hidden="true"></i>{{ 'nav.uv'|trans }}
+                                <span class="d-block small text-body-secondary">{{ 'nav.uv_sub'|trans }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ nav_active == 'fire_risk' ? 'active' : '' }}"
+                               href="{{ path('fire_risk_index') }}">
+                                <i class="bi bi-fire me-2" aria-hidden="true"></i>{{ 'nav.fire_risk'|trans }}
+                                <span class="d-block small text-body-secondary">{{ 'nav.fire_risk_sub'|trans }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ nav_active in observation_active_keys ? 'active' : '' }}"
+                       href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-binoculars me-1" aria-hidden="true"></i>{{ 'nav.observations'|trans }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item {{ nav_active == 'stations' ? 'active' : '' }}"
+                               href="{{ path('stations_index') }}">
+                                <i class="bi bi-broadcast-pin me-2" aria-hidden="true"></i>{{ 'nav.stations'|trans }}
+                                <span class="d-block small text-body-secondary">{{ 'nav.stations_sub'|trans }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ nav_active == 'seismic' ? 'active' : '' }}"
+                               href="{{ path('seismic_index') }}">
+                                <i class="bi bi-activity me-2" aria-hidden="true"></i>{{ 'nav.seismic'|trans }}
+                                <span class="d-block small text-body-secondary">{{ 'nav.seismic_sub'|trans }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ nav_active == 'bivalves' ? 'active' : '' }}"
+                               href="{{ path('bivalves_index') }}">
+                                <i class="bi bi-shell me-2" aria-hidden="true"></i>{{ 'nav.bivalves'|trans }}
+                                <span class="d-block small text-body-secondary">{{ 'nav.bivalves_sub'|trans }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {{ nav_active == 'climate' ? 'active' : '' }}"
+                       {% if nav_active == 'climate' %}aria-current="page"{% endif %}
+                       href="{{ path('climate_index') }}">
+                        <i class="bi bi-thermometer-half me-1" aria-hidden="true"></i>{{ 'nav.climate'|trans }}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {{ nav_active == 'terms' ? 'active' : '' }}"
+                       {% if nav_active == 'terms' %}aria-current="page"{% endif %}
+                       href="{{ path('terms') }}">
+                        <i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>{{ 'nav.terms'|trans }}
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown ms-lg-2">
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false"
+                       aria-label="{{ 'lang.label'|trans }}">
+                        <i class="bi bi-translate me-1" aria-hidden="true"></i>{{ current_locale|upper }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        {% for loc in app_supported_locales|default(['pt','en']) %}
+                            <li>
+                                <a class="dropdown-item {{ current_locale == loc ? 'active' : '' }}"
+                                   href="?lang={{ loc }}"
+                                   {% if current_locale == loc %}aria-current="page"{% endif %}>
+                                    {{ ('lang.' ~ loc)|trans }}
+                                    <span class="text-body-secondary small ms-1">({{ loc|upper }})</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main id="main-content" class="container py-4">
+    {% block body %}{% endblock %}
+</main>
+
+<footer class="container py-4 text-center text-body-secondary small">
+    {{ 'footer.data_source'|trans|raw }}
+</footer>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+{% block javascripts %}{% endblock %}
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+    }
+</script>
+</body>
+</html>

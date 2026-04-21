@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'climate' %}
+{% block title %}{{ location.name }} — Min temperature · IPMA Dashboard{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('climate_index') }}">Climate</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ location.name }} — Min temperature
+            </li>
+        </ol>
+    </nav>
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-thermometer-low text-primary me-2" aria-hidden="true"></i>
+                {{ location.name }} — Daily minimum temperature
+            </h1>
+            <p class="text-body-secondary mb-0">
+                {{ district_label }} · DICO {{ dico }} ·
+                <a href="{{ path('locations_show', { globalIdLocal: location.globalIdLocal }) }}">
+                    Forecast for {{ location.name }}
+                </a>
+                ·
+                <a href="{{ path('climate_max_temperature', { globalIdLocal: location.globalIdLocal }) }}">
+                    Max temperature
+                </a>
+                ·
+                <a href="{{ path('climate_precipitation', { globalIdLocal: location.globalIdLocal }) }}">
+                    Precipitation
+                </a>
+                ·
+                <a href="{{ path('climate_evapotranspiration', { globalIdLocal: location.globalIdLocal }) }}">
+                    Evapotranspiration
+                </a>
+                ·
+                <a href="{{ path('climate_pdsi', { globalIdLocal: location.globalIdLocal }) }}">
+                    PDSI
+                </a>
+            </p>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+            Could not load the climate series: {% if app_debug %}<code>{{ error }}</code>{% endif %}
+        </div>
+    {% elseif records is empty %}
+        <div class="alert alert-warning" role="alert">
+            IPMA returned no records for this municipality.
+        </div>
+    {% else %}
+        {% set point_count = chart.points|length %}
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="small text-body-secondary">Observations</div>
+                        <div class="h4 mb-0">{{ records|length }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="small text-body-secondary">Coldest min</div>
+                        <div class="h4 mb-0">
+                            {% if chart.min is not null %}{{ chart.min|number_format(1) }} °C{% else %}—{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="small text-body-secondary">Highest min</div>
+                        <div class="h4 mb-0">
+                            {% if chart.max is not null %}{{ chart.max|number_format(1) }} °C{% else %}—{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="small text-body-secondary">Average min</div>
+                        <div class="h4 mb-0">
+                            {% if chart.avg is not null %}{{ chart.avg|number_format(1) }} °C{% else %}—{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if point_count > 1 and chart.max is not null and chart.min is not null %}
+            {% set chart_width = 900 %}
+            {% set chart_height = 220 %}
+            {% set padding_x = 32 %}
+            {% set padding_y = 16 %}
+            {% set span = chart.max - chart.min %}
+            {% if span == 0 %}{% set span = 1 %}{% endif %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h6 text-body-secondary text-uppercase mb-3">Trend</h2>
+                    <svg viewBox="0 0 {{ chart_width }} {{ chart_height }}"
+                         role="img"
+                         aria-label="{{ 'chart.min_temp_trend'|trans({'%location%': location.name}) }}"
+                         class="w-100" style="height: {{ chart_height }}px;">
+                        {% set polyline = [] %}
+                        {% for point in chart.points %}
+                            {% set x = padding_x + (loop.index0 / (point_count - 1)) * (chart_width - padding_x * 2) %}
+                            {% set y = chart_height - padding_y - ((point.value - chart.min) / span) * (chart_height - padding_y * 2) %}
+                            {% set polyline = polyline|merge([(x|number_format(2, '.', '')) ~ ',' ~ (y|number_format(2, '.', ''))]) %}
+                        {% endfor %}
+                        <polyline fill="none" stroke="#0d6efd" stroke-width="1.5"
+                                  points="{{ polyline|join(' ') }}"/>
+                    </svg>
+                    <div class="d-flex justify-content-between small text-body-secondary mt-2">
+                        <span>{{ chart.points|first.date }}</span>
+                        <span>{{ chart.points|last.date }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="card">
+            <div class="card-header bg-body-tertiary d-flex justify-content-between align-items-center">
+                <span><strong>Daily series</strong></span>
+                <span class="small text-body-secondary">
+                    {{ records|first.date }} → {{ records|last.date }}
+                </span>
+            </div>
+            <div class="table-responsive" style="max-height: 28rem;">
+                <table class="table table-sm table-striped mb-0 align-middle">
+                    <thead class="sticky-top bg-body-tertiary">
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col" class="text-end">Min (°C)</th>
+                            <th scope="col" class="text-end">Max (°C)</th>
+                            <th scope="col" class="text-end">Range (°C)</th>
+                            <th scope="col" class="text-end">Mean (°C)</th>
+                            <th scope="col" class="text-end">Std</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in records %}
+                            <tr>
+                                <td>{{ r.date }}</td>
+                                <td class="text-end fw-semibold">{{ r.minimum != '' ? (r.minimum|number_format(2)) : '—' }}</td>
+                                <td class="text-end">{{ r.maximum != '' ? (r.maximum|number_format(2)) : '—' }}</td>
+                                <td class="text-end">{{ r.range != '' ? (r.range|number_format(2)) : '—' }}</td>
+                                <td class="text-end">{{ r.mean != '' ? (r.mean|number_format(2)) : '—' }}</td>
+                                <td class="text-end">{{ r.std != '' ? (r.std|number_format(3)) : '—' }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

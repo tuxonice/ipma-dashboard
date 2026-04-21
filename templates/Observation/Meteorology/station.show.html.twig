@@ -1,0 +1,182 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'stations' %}
+{% block title %}{{ station ? station.name : ('common.unknown'|trans) }} · {{ 'nav.brand'|trans }}{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('home') }}">{{ 'common.home'|trans }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('stations_index') }}">{{ 'station.breadcrumb'|trans }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ station ? station.name : ('common.unknown'|trans) }}
+            </li>
+        </ol>
+    </nav>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+            {{ 'station.could_not_load_station'|trans }}{% if app_debug %}<code>{{ error }}</code>{% endif %}
+        </div>
+    {% elseif station %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h1 class="h3 mb-1">
+                    <i class="bi bi-broadcast-pin text-primary me-2" aria-hidden="true"></i>{{ station.name }}
+                </h1>
+                <p class="text-body-secondary mb-0">
+                    {{ 'station.col_id'|trans }} <code>{{ station.id }}</code> ·
+                    {{ station.latitude|number_format(4) }}, {{ station.longitude|number_format(4) }}
+                    <a class="ms-2"
+                        target="_blank"
+                        rel="noopener"
+                        href="https://www.openstreetmap.org/?mlat={{ station.latitude }}&mlon={{ station.longitude }}#map=12/{{ station.latitude }}/{{ station.longitude }}">
+                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> {{ 'location.map'|trans }}
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        {% if latest %}
+            <section class="mb-4" aria-labelledby="latest-heading">
+                <h2 id="latest-heading" class="h5 mb-3">
+                    <i class="bi bi-speedometer2 me-2 text-primary" aria-hidden="true"></i>{{ 'station.latest_reading'|trans }}
+                    <span class="text-body-secondary small ms-1">
+                        · {{ latest.at|date('Y-m-d H:i', timezone) }}
+                        <span class="text-body-tertiary">({{ timezone }})</span>
+                    </span>
+                </h2>
+                <div class="row row-cols-2 row-cols-md-4 g-3">
+                    {% set tiles = [
+                        { icon: 'bi-thermometer-half', key: 'station.tile_temperature',  value: latest.temperature_c,    unit: '°C',   decimals: 1, color: 'danger' },
+                        { icon: 'bi-droplet-half',     key: 'station.tile_humidity',     value: latest.humidity_pct,     unit: '%',    decimals: 0, color: 'info' },
+                        { icon: 'bi-speedometer',      key: 'station.tile_pressure',     value: latest.pressure_hpa,     unit: 'hPa',  decimals: 1, color: 'secondary' },
+                        { icon: 'bi-cloud-rain',       key: 'station.tile_precipitation',value: latest.precipitation_mm, unit: 'mm',   decimals: 1, color: 'primary' },
+                        { icon: 'bi-sun',              key: 'station.tile_radiation',    value: latest.radiation_wm2,    unit: 'W/m²', decimals: 0, color: 'warning' },
+                        { icon: 'bi-wind',             key: 'station.tile_wind_speed',   value: latest.wind_speed_kmh,   unit: 'km/h', decimals: 1, color: 'primary' },
+                    ] %}
+                    {% for tile in tiles %}
+                        <div class="col">
+                            <div class="card h-100 border-start border-3 border-{{ tile.color }}">
+                                <div class="card-body py-3">
+                                    <div class="small text-body-secondary">
+                                        <i class="bi {{ tile.icon }} me-1" aria-hidden="true"></i>{{ tile.key|trans }}
+                                    </div>
+                                    <div class="h5 mb-0">
+                                        {% if tile.value is not null %}
+                                            {{ tile.value|number_format(tile.decimals) }}
+                                            <span class="text-body-secondary small">{{ tile.unit }}</span>
+                                        {% else %}
+                                            <span class="text-body-secondary">—</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="col">
+                        <div class="card h-100 border-start border-3 border-info">
+                            <div class="card-body py-3">
+                                <div class="small text-body-secondary">
+                                    <i class="bi bi-compass me-1" aria-hidden="true"></i>{{ 'station.tile_wind_direction'|trans }}
+                                </div>
+                                <div class="h5 mb-0">
+                                    {% if latest.wind_dir_code %}
+                                        {{ latest.wind_dir_code }}
+                                        <span class="text-body-secondary small">· {{ latest.wind_dir_label|trans }}</span>
+                                    {% else %}
+                                        <span class="text-body-secondary">{{ latest.wind_dir_label|trans }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
+        <section aria-labelledby="history-heading">
+            <h2 id="history-heading" class="h5 mb-3">
+                <i class="bi bi-clock-history me-2 text-primary" aria-hidden="true"></i>{{ 'station.history_heading'|trans }}
+            </h2>
+            {% if observation_error %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+                    {{ 'station.could_not_load_obs'|trans }}{% if app_debug %}<code>{{ observation_error }}</code>{% endif %}
+                </div>
+            {% elseif history is empty %}
+                <div class="alert alert-warning" role="alert">
+                    {{ 'station.no_recent_readings'|trans }}
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle bg-body shadow-sm mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">{{ 'station.col_time'|trans }} <span class="text-body-tertiary fw-normal">({{ timezone }})</span></th>
+                                <th scope="col" class="text-end">{{ 'station.col_temp'|trans }}</th>
+                                <th scope="col" class="text-end">{{ 'station.col_humidity'|trans }}</th>
+                                <th scope="col" class="text-end">{{ 'station.col_pressure'|trans }}</th>
+                                <th scope="col" class="text-end">{{ 'station.col_rain'|trans }}</th>
+                                <th scope="col" class="text-end">{{ 'station.col_wind'|trans }}</th>
+                                <th scope="col" class="text-center">{{ 'station.col_dir'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in history %}
+                                <tr>
+                                    <td>{{ row.at|date('Y-m-d H:i', timezone) }}</td>
+                                    <td class="text-end">
+                                        {% if row.temperature_c is not null %}
+                                            {{ row.temperature_c|number_format(1) }} °C
+                                        {% else %}
+                                            <span class="text-body-secondary">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if row.humidity_pct is not null %}
+                                            {{ row.humidity_pct|number_format(0) }} %
+                                        {% else %}
+                                            <span class="text-body-secondary">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if row.pressure_hpa is not null %}
+                                            {{ row.pressure_hpa|number_format(1) }}
+                                        {% else %}
+                                            <span class="text-body-secondary">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if row.precipitation_mm is not null %}
+                                            {{ row.precipitation_mm|number_format(1) }} mm
+                                        {% else %}
+                                            <span class="text-body-secondary">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if row.wind_speed_kmh is not null %}
+                                            {{ row.wind_speed_kmh|number_format(1) }} km/h
+                                        {% else %}
+                                            <span class="text-body-secondary">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if row.wind_dir_code %}
+                                            <span class="badge text-bg-light border" title="{{ row.wind_dir_label|trans }}">
+                                                {{ row.wind_dir_code }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-body-secondary">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </section>
+    {% endif %}
+{% endblock %}

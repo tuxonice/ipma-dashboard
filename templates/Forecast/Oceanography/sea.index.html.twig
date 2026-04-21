@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'sea' %}
+{% block title %}{{ 'sea.title'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+        <div>
+            <h1 class="h3 mb-1"><i class="bi bi-water text-primary me-2" aria-hidden="true"></i>{{ 'sea.heading'|trans }}</h1>
+            <p class="text-body-secondary mb-0">
+                {{ 'sea.subtitle'|trans }}
+            </p>
+        </div>
+        <div class="flex-grow-1" style="max-width: 320px;">
+            <label for="sea-filter" class="visually-hidden">{{ 'common.filter_locations'|trans }}</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+                <input
+                    type="search"
+                    id="sea-filter"
+                    class="form-control"
+                    placeholder="{{ 'common.filter_by_name'|trans }}"
+                    autocomplete="off">
+            </div>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+            {{ 'sea.load_error'|trans }}{% if app_debug %}<code>{{ error }}</code>{% endif %}
+        </div>
+    {% elseif grouped is empty %}
+        <div class="alert alert-warning" role="alert">{{ 'sea.none_returned'|trans }}</div>
+    {% else %}
+        {% for region_id, locations in grouped %}
+            <section class="mb-4" data-region>
+                <h2 class="h5 text-uppercase text-body-secondary mb-3">
+                    {{ region_labels[region_id]|trans }}
+                    <span class="badge text-bg-secondary align-middle">{{ locations|length }}</span>
+                </h2>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+                    {% for location in locations %}
+                        <div class="col" data-location-name="{{ location.name|lower }}">
+                            <a href="{{ path('sea_show', { globalIdLocal: location.globalIdLocal }) }}"
+                               class="card h-100 text-decoration-none text-body sea-card">
+                                <div class="card-body py-3">
+                                    <div class="fw-semibold">
+                                        <i class="bi bi-water text-info me-1" aria-hidden="true"></i>{{ location.name }}
+                                    </div>
+                                    <div class="small text-body-secondary">
+                                        {{ location.latitude|number_format(3) }}, {{ location.longitude|number_format(3) }}
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .sea-card { transition: transform .08s ease-in-out, box-shadow .08s ease-in-out; }
+    .sea-card:hover { transform: translateY(-1px); box-shadow: 0 .25rem .75rem rgba(0,0,0,.08); }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    (function () {
+        const input = document.getElementById('sea-filter');
+        if (!input) return;
+        const regions = document.querySelectorAll('[data-region]');
+        input.addEventListener('input', function () {
+            const q = this.value.trim().toLowerCase();
+            regions.forEach(region => {
+                let visible = 0;
+                region.querySelectorAll('[data-location-name]').forEach(card => {
+                    const match = !q || card.dataset.locationName.includes(q);
+                    card.classList.toggle('d-none', !match);
+                    if (match) visible++;
+                });
+                region.classList.toggle('d-none', visible === 0);
+            });
+        });
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'stations' %}
+{% block title %}{{ 'station.map_title'|trans }}{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""/>
+<style>
+    #station-map {
+        height: 70vh;
+        min-height: 420px;
+        border-radius: .5rem;
+        z-index: 0;
+    }
+    .station-marker {
+        border: 2px solid #fff;
+        border-radius: 999px;
+        box-shadow: 0 1px 3px rgba(0,0,0,.25);
+        color: #111;
+        font: 600 11px/1 system-ui, sans-serif;
+        text-align: center;
+        white-space: nowrap;
+    }
+    .station-marker--missing {
+        background: #e9ecef;
+        color: #6c757d;
+    }
+    .leaflet-popup-content dl { margin: 0; }
+    .leaflet-popup-content dt { font-weight: 600; }
+    .leaflet-popup-content dd { margin: 0 0 .25rem 0; }
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-map text-primary me-2" aria-hidden="true"></i>{{ 'station.map_heading'|trans }}
+            </h1>
+            <p class="text-body-secondary mb-0">
+                {{ 'station.map_subtitle'|trans }}
+                {% if updated_at %}
+                    <span class="ms-1">{{ 'station.map_reported_at'|trans({ '%datetime%': updated_at|date('Y-m-d H:i', timezone) }) }}
+                    <span class="text-body-tertiary">({{ timezone }})</span></span>
+                {% endif %}
+                {% if stations_count %}
+                    <span class="ms-1">{{ 'station.map_count'|trans({ '%count%': stations_count }) }}</span>
+                {% endif %}
+            </p>
+        </div>
+        <div class="btn-group" role="group" aria-label="{{ 'station.heading'|trans }}">
+            <a href="{{ path('stations_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-table me-1" aria-hidden="true"></i>{{ 'station.table'|trans }}
+            </a>
+            <a href="{{ path('stations_map') }}" class="btn btn-primary" aria-current="page">
+                <i class="bi bi-map me-1" aria-hidden="true"></i>{{ 'station.map'|trans }}
+            </a>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+            {{ 'station.map_load_error'|trans }}{% if app_debug %}<code>{{ error }}</code>{% endif %}
+        </div>
+    {% else %}
+        <div id="station-map" role="img" aria-label="{{ 'station.map_aria'|trans }}"></div>
+
+        {% if temp_min is not null and temp_max is not null %}
+            <p class="small text-body-secondary mt-3 mb-0">
+                <i class="bi bi-thermometer-half me-1" aria-hidden="true"></i>
+                {{ 'station.map_legend'|trans({ '%min%': temp_min|number_format(1), '%max%': temp_max|number_format(1) }) }}
+            </p>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+{% if not error %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+<script id="stations-data" type="application/json">{{ stations_json|raw }}</script>
+<script id="station-i18n" type="application/json">{{ {
+    temperature: 'station.tile_temperature'|trans,
+    humidity:    'station.tile_humidity'|trans,
+    pressure:    'station.tile_pressure'|trans,
+    rain:        'station.col_rain'|trans,
+    wind:        'station.col_wind'|trans,
+    open:        'common.open_details'|trans,
+    station:     'station.col_station'|trans,
+}|json_encode|raw }}</script>
+<script>
+    (function () {
+        var raw = document.getElementById('stations-data').textContent;
+        var stations = JSON.parse(raw);
+        var i18n = JSON.parse(document.getElementById('station-i18n').textContent);
+
+        var map = L.map('station-map', {
+            center: [39.5, -8.0],
+            zoom: 7,
+            scrollWheelZoom: false,
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+
+        // Color scale for temperature (°C) — blue → green → yellow → red.
+        function tempColor(t) {
+            if (t === null || t === undefined) return '#adb5bd';
+            var stops = [
+                { t:  0, c: [ 33, 102, 172] },
+                { t: 10, c: [ 67, 147, 195] },
+                { t: 15, c: [146, 197, 222] },
+                { t: 20, c: [254, 224, 139] },
+                { t: 25, c: [244, 165,  68] },
+                { t: 30, c: [215,  48,  39] },
+                { t: 35, c: [140,  10,  20] },
+            ];
+            if (t <= stops[0].t) return rgb(stops[0].c);
+            for (var i = 1; i < stops.length; i++) {
+                if (t <= stops[i].t) {
+                    var a = stops[i - 1], b = stops[i];
+                    var k = (t - a.t) / (b.t - a.t);
+                    return rgb([
+                        Math.round(a.c[0] + (b.c[0] - a.c[0]) * k),
+                        Math.round(a.c[1] + (b.c[1] - a.c[1]) * k),
+                        Math.round(a.c[2] + (b.c[2] - a.c[2]) * k),
+                    ]);
+                }
+            }
+            return rgb(stops[stops.length - 1].c);
+        }
+
+        function rgb(c) { return 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')'; }
+
+        function fmt(value, unit, decimals) {
+            if (value === null || value === undefined) return '—';
+            return Number(value).toFixed(decimals == null ? 1 : decimals) + ' ' + unit;
+        }
+
+        function escapeHtml(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
+            });
+        }
+
+        var bounds = [];
+
+        stations.forEach(function (s) {
+            var temp = s.temperature_c;
+            var label = (temp === null || temp === undefined) ? '—' : Math.round(temp) + '°';
+            var cls = 'station-marker' + (temp === null ? ' station-marker--missing' : '');
+
+            var icon = L.divIcon({
+                className: '',
+                html: '<div class="' + cls + '" style="background:' + tempColor(temp)
+                      + ';padding:4px 6px;">' + escapeHtml(label) + '</div>',
+                iconSize: [34, 22],
+                iconAnchor: [17, 11],
+            });
+
+            var marker = L.marker([s.lat, s.lng], { icon: icon, title: s.name || (i18n.station + ' ' + s.id) });
+
+            var popup =
+                '<strong>' + escapeHtml(s.name || i18n.station) + '</strong>'
+                + '<div class="small text-body-secondary mb-2">#' + escapeHtml(s.id) + '</div>'
+                + '<dl class="small">'
+                +   '<dt>' + escapeHtml(i18n.temperature) + '</dt><dd>' + fmt(s.temperature_c, '°C', 1) + '</dd>'
+                +   '<dt>' + escapeHtml(i18n.humidity)    + '</dt><dd>' + fmt(s.humidity_pct,  '%', 0) + '</dd>'
+                +   '<dt>' + escapeHtml(i18n.pressure)    + '</dt><dd>' + fmt(s.pressure_hpa,  'hPa', 1) + '</dd>'
+                +   '<dt>' + escapeHtml(i18n.rain)        + '</dt><dd>' + fmt(s.precipitation_mm, 'mm', 1) + '</dd>'
+                +   '<dt>' + escapeHtml(i18n.wind)        + '</dt><dd>' + fmt(s.wind_speed_kmh, 'km/h', 1)
+                +     (s.wind_dir_code ? ' ' + escapeHtml(s.wind_dir_code) : '') + '</dd>'
+                + '</dl>'
+                + '<a href="/stations/' + encodeURIComponent(s.id) + '">' + escapeHtml(i18n.open) + ' →</a>';
+
+            marker.bindPopup(popup);
+            marker.addTo(map);
+            bounds.push([s.lat, s.lng]);
+        });
+
+        if (bounds.length > 0) {
+            map.fitBounds(bounds, { padding: [20, 20] });
+        }
+    })();
+</script>
+{% endif %}
+{% endblock %}

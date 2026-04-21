@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'home.title'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="p-5 mb-4 bg-body rounded-3 shadow-sm">
+        <div class="container-fluid py-3">
+            <h1 class="display-5 fw-bold">
+                <i class="bi bi-cloud-sun-fill text-primary me-2" aria-hidden="true"></i>{{ 'home.title'|trans }}
+            </h1>
+            <p class="col-md-8 fs-5">
+                {{ 'home.intro'|trans|raw }}
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <a href="{{ path('locations_index') }}"
+               class="card h-100 text-decoration-none text-body">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-geo-alt me-2" aria-hidden="true"></i>{{ 'home.cards.locations_title'|trans }}</h5>
+                    <p class="card-text text-body-secondary">
+                        {{ 'home.cards.locations_body'|trans }}
+                    </p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ path('warnings_index') }}"
+               class="card h-100 text-decoration-none text-body">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ 'home.cards.warnings_title'|trans }}</h5>
+                    <p class="card-text text-body-secondary">
+                        {{ 'home.cards.warnings_body'|trans }}
+                    </p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ path('sea_index') }}"
+               class="card h-100 text-decoration-none text-body">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-water me-2" aria-hidden="true"></i>{{ 'home.cards.sea_title'|trans }}</h5>
+                    <p class="card-text text-body-secondary">
+                        {{ 'home.cards.sea_body'|trans }}
+                    </p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ path('stations_index') }}"
+               class="card h-100 text-decoration-none text-body">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-broadcast-pin me-2" aria-hidden="true"></i>{{ 'home.cards.stations_title'|trans }}</h5>
+                    <p class="card-text text-body-secondary">
+                        {{ 'home.cards.stations_body'|trans }}
+                    </p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ path('fire_risk_index') }}"
+               class="card h-100 text-decoration-none text-body">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-fire text-danger me-2" aria-hidden="true"></i>{{ 'home.cards.fire_risk_title'|trans }}</h5>
+                    <p class="card-text text-body-secondary">
+                        {{ 'home.cards.fire_risk_body'|trans }}
+                    </p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ path('climate_index') }}"
+               class="card h-100 text-decoration-none text-body">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-thermometer-half me-2" aria-hidden="true"></i>{{ 'home.cards.climate_title'|trans }}</h5>
+                    <p class="card-text text-body-secondary">
+                        {{ 'home.cards.climate_body'|trans }}
+                    </p>
+                </div>
+            </a>
+        </div>
+    </div>
+{% endblock %}

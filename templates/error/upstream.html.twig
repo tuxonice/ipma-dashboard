@@ -1,0 +1,7 @@
+{% extends 'error/error.html.twig' %}
+
+{% block heading %}{{ upstream|default('Upstream') }} is temporarily unavailable{% endblock %}
+{% block description %}
+    We couldn't reach the {{ upstream|default('upstream') }} service to load the data for this page.
+    The service may be overloaded or briefly offline — please try again shortly.
+{% endblock %}
