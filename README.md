@@ -1,5 +1,11 @@
 # IPMA Dashboard
 
+[![CI](https://github.com/tuxonice/ipma-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/tuxonice/ipma-dashboard/actions/workflows/ci.yml)
+[![PHP 8.4](https://img.shields.io/badge/PHP-8.4-8892BF.svg)](https://www.php.net/)
+[![Symfony 7.1](https://img.shields.io/badge/Symfony-7.1-000000.svg?logo=symfony)](https://symfony.com/)
+[![PHPStan Level 8](https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg)](https://phpstan.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Weather information dashboard for Portugal, powered by the
 [IPMA Open API](https://api.ipma.pt/) and the
 [`tuxonice/ipma-api`](https://github.com/tuxonice/ipma-api) PHP client.
