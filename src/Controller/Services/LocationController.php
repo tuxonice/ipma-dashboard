@@ -9,11 +9,13 @@ use App\Service\Forecast\Warnings\WarningRepository;
 use App\Service\ForecastRepository;
 use App\Service\Services\LocationRepository;
 use App\Service\WeatherDictionary;
+use DateTime;
 use DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tlab\IpmaApi\Exception\IpmaApiException;
+use Tlab\SunCalc\SunCalc;
 use Twig\Environment;
 
 /**
@@ -70,6 +72,29 @@ final class LocationController
                 'forecast_updated_at' => null,
                 'forecast_error' => null,
                 'area_warnings' => [],
+                'sunrise' => null,
+                'sunset' => null,
+                'sunrise_end' => null,
+                'sunset_start' => null,
+                'solar_noon' => null,
+                'nadir' => null,
+                'dawn' => null,
+                'dusk' => null,
+                'nautical_dawn' => null,
+                'nautical_dusk' => null,
+                'night_end' => null,
+                'night' => null,
+                'golden_hour_end' => null,
+                'golden_hour' => null,
+                'day_length_minutes' => null,
+                'moon_illumination' => null,
+                'moon_distance_km' => null,
+                'moon_azimuth_deg' => null,
+                'moon_altitude_deg' => null,
+                'sun_azimuth_deg' => null,
+                'sun_altitude_deg' => null,
+                'moonrise' => null,
+                'moonset' => null,
             ]);
 
             return new Response($html, Response::HTTP_BAD_GATEWAY);
@@ -126,6 +151,49 @@ final class LocationController
             // forecast view still renders. (The /warnings page surfaces errors.)
         }
 
+        $todayLocal = new DateTime('today', $tz);
+        $sunCalc   = new SunCalc($todayLocal, $location->latitude, $location->longitude);
+        $sunTimes  = $sunCalc->getSunTimes();
+
+        $toLocal = static function (?DateTime $dt) use ($tz): ?DateTimeImmutable {
+            return $dt !== null
+                ? (new DateTimeImmutable('@' . $dt->getTimestamp()))->setTimezone($tz)
+                : null;
+        };
+
+        $sunrise      = $toLocal($sunTimes['sunrise']      ?? null);
+        $sunset       = $toLocal($sunTimes['sunset']       ?? null);
+        $sunriseEnd   = $toLocal($sunTimes['sunriseEnd']   ?? null);
+        $sunsetStart  = $toLocal($sunTimes['sunsetStart']  ?? null);
+        $solarNoon    = $toLocal($sunTimes['solarNoon']    ?? null);
+        $nadir        = $toLocal($sunTimes['nadir']        ?? null);
+        $dawn         = $toLocal($sunTimes['dawn']         ?? null);
+        $dusk         = $toLocal($sunTimes['dusk']         ?? null);
+        $nauticalDawn = $toLocal($sunTimes['nauticalDawn'] ?? null);
+        $nauticalDusk = $toLocal($sunTimes['nauticalDusk'] ?? null);
+        $nightEnd     = $toLocal($sunTimes['nightEnd']     ?? null);
+        $night        = $toLocal($sunTimes['night']        ?? null);
+        $goldenHourEnd   = $toLocal($sunTimes['goldenHourEnd'] ?? null);
+        $goldenHour      = $toLocal($sunTimes['goldenHour']    ?? null);
+
+        $dayLengthMinutes = ($sunrise !== null && $sunset !== null)
+            ? (int) round(($sunset->getTimestamp() - $sunrise->getTimestamp()) / 60)
+            : null;
+
+        $moonIllumination = $sunCalc->getMoonIllumination();
+        $moonPosition     = $sunCalc->getMoonPosition($todayLocal);
+        $moonDistanceKm   = (int) round($moonPosition->getDist());
+        $moonAzimuthDeg   = round(fmod(rad2deg($moonPosition->getAzimuth()) + 180, 360), 1);
+        $moonAltitudeDeg  = round(rad2deg($moonPosition->getAltitude()), 1);
+
+        $sunPosition     = $sunCalc->getSunPosition();
+        $sunAzimuthDeg   = round(fmod(rad2deg($sunPosition->getAzimuth()) + 180, 360), 1);
+        $sunAltitudeDeg  = round(rad2deg($sunPosition->getAltitude()), 1);
+
+        $moonTimes = $sunCalc->getMoonTimes();
+        $moonrise  = isset($moonTimes['moonrise']) ? (new DateTimeImmutable('@' . $moonTimes['moonrise']->getTimestamp()))->setTimezone($tz) : null;
+        $moonset   = isset($moonTimes['moonset'])  ? (new DateTimeImmutable('@' . $moonTimes['moonset']->getTimestamp()))->setTimezone($tz)  : null;
+
         $html = $this->twig->render('Services/location.show.html.twig', [
             'location' => $location,
             'region_label' => LocationRepository::regionLabel($location->idRegion),
@@ -135,6 +203,29 @@ final class LocationController
             'forecast_updated_at' => $forecastUpdatedAt instanceof \DateTimeImmutable ? $forecastUpdatedAt->setTimezone($tz) : null,
             'forecast_error' => $forecastError,
             'area_warnings' => $areaWarnings,
+            'sunrise' => $sunrise,
+            'sunset' => $sunset,
+            'sunrise_end' => $sunriseEnd,
+            'sunset_start' => $sunsetStart,
+            'solar_noon' => $solarNoon,
+            'nadir' => $nadir,
+            'dawn' => $dawn,
+            'dusk' => $dusk,
+            'nautical_dawn' => $nauticalDawn,
+            'nautical_dusk' => $nauticalDusk,
+            'night_end' => $nightEnd,
+            'night' => $night,
+            'golden_hour_end' => $goldenHourEnd,
+            'golden_hour' => $goldenHour,
+            'day_length_minutes' => $dayLengthMinutes,
+            'moon_illumination' => $moonIllumination,
+            'moon_distance_km' => $moonDistanceKm,
+            'moon_azimuth_deg' => $moonAzimuthDeg,
+            'moon_altitude_deg' => $moonAltitudeDeg,
+            'sun_azimuth_deg' => $sunAzimuthDeg,
+            'sun_altitude_deg' => $sunAltitudeDeg,
+            'moonrise' => $moonrise,
+            'moonset' => $moonset,
         ]);
 
         return new Response($html);
