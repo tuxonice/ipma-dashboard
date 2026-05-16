@@ -152,6 +152,7 @@ final class LocationController
         }
 
         $todayLocal = new DateTime('today', $tz);
+        $nowLocal   = new DateTime('now', $tz);
         $sunCalc   = new SunCalc($todayLocal, $location->latitude, $location->longitude);
         $sunTimes  = $sunCalc->getSunTimes();
 
@@ -181,14 +182,15 @@ final class LocationController
             : null;
 
         $moonIllumination = $sunCalc->getMoonIllumination();
-        $moonPosition     = $sunCalc->getMoonPosition($todayLocal);
+        $moonPosition     = $sunCalc->getMoonPosition($nowLocal);
         $moonDistanceKm   = (int) round($moonPosition->getDist());
         $moonAzimuthDeg   = round(fmod(rad2deg($moonPosition->getAzimuth()) + 180, 360), 1);
         $moonAltitudeDeg  = round(rad2deg($moonPosition->getAltitude()), 1);
 
-        $sunPosition     = $sunCalc->getSunPosition();
-        $sunAzimuthDeg   = round(fmod(rad2deg($sunPosition->getAzimuth()) + 180, 360), 1);
-        $sunAltitudeDeg  = round(rad2deg($sunPosition->getAltitude()), 1);
+        $sunCalcNow    = new SunCalc($nowLocal, $location->latitude, $location->longitude);
+        $sunPosition   = $sunCalcNow->getSunPosition();
+        $sunAzimuthDeg = round(fmod(rad2deg($sunPosition->getAzimuth()) + 180, 360), 1);
+        $sunAltitudeDeg = round(rad2deg($sunPosition->getAltitude()), 1);
 
         $moonTimes = $sunCalc->getMoonTimes();
         $moonrise  = isset($moonTimes['moonrise']) ? (new DateTimeImmutable('@' . $moonTimes['moonrise']->getTimestamp()))->setTimezone($tz) : null;
