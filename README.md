@@ -83,6 +83,7 @@ docu/                # Project documentation and IPMA endpoint quirks
 - **Twig 3.10** for templating with auto-escaping
 - **Bootstrap 5.3** + **Bootstrap Icons** via CDN (no build step)
 - **`tuxonice/ipma-api` ^0.6** as the IPMA client (with caching)
+- **`tuxonice/suncalc-php`** for astronomical calculations (sun/moon times and positions)
 - **PHPUnit 11** for unit tests
 - **PHPStan 2.1** for static analysis (level 8)
 - **PHP CodeSniffer 4.0** for code style (PSR-12)
@@ -116,6 +117,27 @@ make shell
 ```
 
 For more commands and architecture details, see [CLAUDE.md](CLAUDE.md).
+
+## Data & Attribution
+
+### Meteorological data
+Weather, oceanographic, seismic and climate data is provided by the
+[Instituto Português do Mar e da Atmosfera (IPMA)](https://www.ipma.pt/)
+via the [IPMA Open API](https://api.ipma.pt/).
+
+As required by IPMA's terms of use:
+- **Source must always be cited** when reusing data from this dashboard.
+- Data may be freely used for **personal or public non-commercial purposes only**.
+  Commercial use requires prior authorisation from IPMA.
+- For IPMA's full terms see [api.ipma.pt — legal](https://api.ipma.pt/#legal).
+
+This dashboard is not affiliated with or endorsed by IPMA.
+
+### Astronomical data
+Sun and moon data (rise/set times, positions, phase, illumination) is calculated
+locally using [tuxonice/suncalc-php](https://github.com/tuxonice/suncalc-php),
+a PHP port of [Vladimir Agafonkin's suncalc](https://github.com/mourner/suncalc).
+This data is **not** sourced from the IPMA API and carries no IPMA usage restrictions.
 
 ## License
 
