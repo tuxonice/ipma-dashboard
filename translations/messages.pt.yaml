@@ -81,7 +81,7 @@ chart:
     evapotranspiration_trend: "Tendência da evapotranspiração média diária para %location%"
 
 footer:
-    data_source: "Dados fornecidos pela <a href=\"https://api.ipma.pt/\" target=\"_blank\" rel=\"noopener\">API do IPMA</a>."
+    data_source: "Dados meteorológicos fornecidos pela <a href=\"https://api.ipma.pt/\" target=\"_blank\" rel=\"noopener\">API do IPMA</a>."
     source_code: "<a href=\"https://github.com/tuxonice/ipma-dashboard\" target=\"_blank\" rel=\"noopener\"><i class=\"bi bi-github\" aria-hidden=\"true\"></i> Código fonte</a>"
 
 home:
@@ -135,6 +135,7 @@ location:
     golden_hour_end: "Fim da hora dourada"
     golden_hour: "Início da hora dourada"
     day_length: "Duração do dia"
+    astronomical_section: "Dados astronómicos"
     sun_section: "Horas solares"
     moon_section: "Lua"
     moon_phase: "Fase"
