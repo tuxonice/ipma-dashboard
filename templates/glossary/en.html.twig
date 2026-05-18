@@ -1,0 +1,358 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'glossary' %}
+
+{% block title %}Glossary · IPMA Dashboard{% endblock %}
+
+{% block body %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">{{ 'common.home'|trans }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Glossary</li>
+    </ol>
+</nav>
+
+<h1 class="mb-2"><i class="bi bi-book me-2" aria-hidden="true"></i>Glossary</h1>
+<p class="lead text-body-secondary mb-4">Quick reference to the terms, scales and data used across the IPMA platform.</p>
+
+<div class="accordion" id="glossaryAccordion">
+    {# Astronomical Data #}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#astronomicalData" aria-expanded="true" aria-controls="astronomicalData">
+                <i class="bi bi-moon-stars me-2" aria-hidden="true"></i>Astronomical Data
+            </button>
+        </h2>
+        <div id="astronomicalData" class="accordion-collapse collapse show" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">
+                <p class="small text-body-secondary mb-3">Astronomical terms related to the position of the Sun and Moon. Data is computed locally using the <code>suncalc-php</code> library, not from the IPMA API.</p>
+
+                <h6 class="mt-3 mb-2">Solar Twilight Phases</h6>
+                <table class="table table-sm mb-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">Term</th>
+                            <th scope="col">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="small">Astronomical dawn</td>
+                            <td class="small">Sun at −18° (sky completely dark before sunrise)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Nautical dawn</td>
+                            <td class="small">Sun at −12° (horizon just visible)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Civil dawn</td>
+                            <td class="small">Sun at −6° (enough light for outdoor work)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Sunrise</td>
+                            <td class="small">Upper limb touches horizon</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Sunrise end</td>
+                            <td class="small">Lower limb clears horizon (full disc visible)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Golden hour end</td>
+                            <td class="small">Sun below 6° (warm, low-angle light)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Solar noon</td>
+                            <td class="small">Sun at highest altitude for the day</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Sunset</td>
+                            <td class="small">Upper limb touches horizon at dusk</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Sunset start</td>
+                            <td class="small">Lower limb clears horizon (full disc set)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Golden hour start</td>
+                            <td class="small">Sun below 6° (warm, low-angle light)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Civil dusk</td>
+                            <td class="small">Sun at −6° (enough light for outdoor work)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Nautical dusk</td>
+                            <td class="small">Sun at −12° (horizon just visible)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Astronomical dusk</td>
+                            <td class="small">Sun at −18° (sky completely dark after sunset)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Nadir</td>
+                            <td class="small">Sun at its lowest point (directly below)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Day length</td>
+                            <td class="small">Interval from sunrise to sunset</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h6 class="mt-3 mb-2">Sun Position</h6>
+                <table class="table table-sm mb-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">Term</th>
+                            <th scope="col">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="small">Azimuth</td>
+                            <td class="small">Compass bearing (0° = North, 90° = East, etc.)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Altitude</td>
+                            <td class="small">Angle above the horizon (negative = below horizon)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h6 class="mt-3 mb-2">Moon Phases (Numeric Range 0–1)</h6>
+                <table class="table table-sm mb-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">Phase</th>
+                            <th scope="col">Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="small">New moon</td>
+                            <td class="small">0–0.125</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Waxing crescent</td>
+                            <td class="small">0.125–0.25</td>
+                        </tr>
+                        <tr>
+                            <td class="small">First quarter</td>
+                            <td class="small">0.25–0.375</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Waxing gibbous</td>
+                            <td class="small">0.375–0.5</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Full moon</td>
+                            <td class="small">0.5–0.625</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Waning gibbous</td>
+                            <td class="small">0.625–0.75</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Last quarter</td>
+                            <td class="small">0.75–0.875</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Waning crescent</td>
+                            <td class="small">0.875–1</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h6 class="mt-3 mb-2">Additional Moon Data</h6>
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Term</th>
+                            <th scope="col">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="small">Moonrise</td>
+                            <td class="small">Time of Moon's appearance above the horizon</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Moonset</td>
+                            <td class="small">Time of Moon's disappearance below the horizon</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Illumination</td>
+                            <td class="small">Percentage of lunar surface illuminated</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Distance</td>
+                            <td class="small">Distance of the Moon in kilometres</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Azimuth (Moon)</td>
+                            <td class="small">Compass bearing of the Moon (0° = North, 90° = East, etc.)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Altitude (Moon)</td>
+                            <td class="small">Angle of the Moon above the horizon</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# Sea-State Forecast Terms #}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#seaStateData" aria-expanded="false" aria-controls="seaStateData">
+                <i class="bi bi-water me-2" aria-hidden="true"></i>Sea-State Forecast Terms
+            </button>
+        </h2>
+        <div id="seaStateData" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">
+                <p class="small text-body-secondary mb-3">Terms related to the sea-state forecast provided by the IPMA API.</p>
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Term</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="small">Wave height</td>
+                            <td class="small">Significant wave height of wind-generated waves (average of the highest one-third)</td>
+                            <td class="small">m</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Wave period</td>
+                            <td class="small">Dominant period between successive wave crests</td>
+                            <td class="small">s</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Wave direction</td>
+                            <td class="small">Compass direction waves are travelling toward</td>
+                            <td class="small">compass</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Total sea</td>
+                            <td class="small">Combined height of swell and wind-generated waves</td>
+                            <td class="small">m</td>
+                        </tr>
+                        <tr>
+                            <td class="small">SST (Sea Surface Temperature)</td>
+                            <td class="small">Temperature of water at the surface</td>
+                            <td class="small">°C</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# UV Index #}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uvIndexData" aria-expanded="false" aria-controls="uvIndexData">
+                <i class="bi bi-sun me-2" aria-hidden="true"></i>UV Index
+            </button>
+        </h2>
+        <div id="uvIndexData" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">
+                <p class="small text-body-secondary mb-3">WHO global UV index scale, used by IPMA.</p>
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Level</th>
+                            <th scope="col">Range</th>
+                            <th scope="col">Advice</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge bg-success">Low</span></td>
+                            <td class="small">0–2</td>
+                            <td class="small">No protection required.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge text-dark" style="background-color: #ffc107;">Moderate</span></td>
+                            <td class="small">3–5</td>
+                            <td class="small">Protection recommended: hat, sunglasses, SPF 30+.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-warning text-dark">High</span></td>
+                            <td class="small">6–7</td>
+                            <td class="small">Avoid sun 11h-16h; SPF 30+, shade, clothing.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-danger">Very High</span></td>
+                            <td class="small">8–10</td>
+                            <td class="small">Extra protection; avoid being outside 11h-16h.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge" style="background-color: #9c27b0;">Extreme</span></td>
+                            <td class="small">11+</td>
+                            <td class="small">Stay indoors during midday; full protection outdoors.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# Bivalve Harvesting #}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bivalveData" aria-expanded="false" aria-controls="bivalveData">
+                <i class="bi bi-bug me-2" aria-hidden="true"></i>Bivalve Harvesting
+            </button>
+        </h2>
+        <div id="bivalveData" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">
+                <p class="small text-body-secondary mb-3">Status of harvesting availability in bivalve mollusc production zones. Note: Zones may have interdicted species even when the overall status is "open".</p>
+                <table class="table table-sm mb-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">Status</th>
+                            <th scope="col">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge bg-success">Open</span></td>
+                            <td class="small">Harvesting permitted for all species.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge text-dark" style="background-color: #ffc107;">Partially open</span></td>
+                            <td class="small">Harvesting permitted for some species; others interdicted.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-warning text-dark">Partially closed</span></td>
+                            <td class="small">Harvesting restricted; some species interdicted.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-danger">Closed</span></td>
+                            <td class="small">Harvesting prohibited for all species.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-secondary">Unknown</span></td>
+                            <td class="small">Status not available.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h6 class="mt-3 mb-2">EU Sanitary Classification</h6>
+                <p class="small mb-0">Classifications follow EU bivalve sanitary standards:</p>
+                <ul class="small mb-0 ps-3">
+                    <li><strong>A:</strong> Ready for direct consumption</li>
+                    <li><strong>B:</strong> Depuration required</li>
+                    <li><strong>C:</strong> Relaying required</li>
+                    <li><strong>NA:</strong> Not applicable</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -70,6 +70,8 @@ nav:
     bivalves_sub: "Harvesting interdictions"
     climate: "Climate"
     terms: "Terms"
+    glossary: "Glossary"
+    glossary_sub: "IPMA scales and terminology"
     skip_to_content: "Skip to main content"
     main: "Main navigation"
 
@@ -247,6 +249,7 @@ climate:
     title: "Climate · IPMA Dashboard"
     heading: "Climate observations"
     subtitle: "Daily climate series published by IPMA per municipality (CSV). Dataset currently covers mainland Portugal only."
+    filter_placeholder: "Filter by municipality name…"
     none_available: "No municipalities available."
     municipality_one: "municipality"
     municipality_many: "municipalities"

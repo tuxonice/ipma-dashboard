@@ -1,0 +1,358 @@
+{% extends 'base.html.twig' %}
+
+{% set active = 'glossary' %}
+
+{% block title %}Glossário · IPMA Dashboard{% endblock %}
+
+{% block body %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">{{ 'common.home'|trans }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Glossário</li>
+    </ol>
+</nav>
+
+<h1 class="mb-2"><i class="bi bi-book me-2" aria-hidden="true"></i>Glossário</h1>
+<p class="lead text-body-secondary mb-4">Referência rápida aos termos, escalas e dados utilizados na plataforma IPMA.</p>
+
+<div class="accordion" id="glossaryAccordion">
+    {# Astronomical Data #}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#astronomicalData" aria-expanded="true" aria-controls="astronomicalData">
+                <i class="bi bi-moon-stars me-2" aria-hidden="true"></i>Dados Astronómicos
+            </button>
+        </h2>
+        <div id="astronomicalData" class="accordion-collapse collapse show" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">
+                <p class="small text-body-secondary mb-3">Termos astronómicos relacionados com a posição do Sol e da Lua. Os dados são calculados localmente utilizando a biblioteca <code>suncalc-php</code>, não provenientes da API IPMA.</p>
+
+                <h6 class="mt-3 mb-2">Fases do Crepúsculo Solar</h6>
+                <table class="table table-sm mb-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">Termo</th>
+                            <th scope="col">Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="small">Alvorada Astronómica</td>
+                            <td class="small">Sol a -18° (céu completamente escuro antes do amanhecer)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Alvorada Náutica</td>
+                            <td class="small">Sol a -12° (horizonte apenas visível)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Alvorada Civil</td>
+                            <td class="small">Sol a -6° (luz suficiente para trabalho ao ar livre)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Nascer do Sol</td>
+                            <td class="small">Limbo superior toca o horizonte</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Fim do Nascer</td>
+                            <td class="small">Limbo inferior limpo (disco completo visível)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Hora Dourada (Fim)</td>
+                            <td class="small">Sol abaixo de 6° (luz quente e de baixo ângulo)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Meio-dia Solar</td>
+                            <td class="small">Sol na sua altitude mais elevada do dia</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Pôr do Sol</td>
+                            <td class="small">Limbo superior toca o horizonte ao entardecer</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Fim do Pôr</td>
+                            <td class="small">Limbo inferior limpo (disco completo mergulhado)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Hora Dourada (Início)</td>
+                            <td class="small">Sol abaixo de 6° (luz quente e de baixo ângulo)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Crepúsculo Civil</td>
+                            <td class="small">Sol a -6° (luz suficiente para trabalho ao ar livre)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Crepúsculo Náutico</td>
+                            <td class="small">Sol a -12° (horizonte apenas visível)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Crepúsculo Astronómica</td>
+                            <td class="small">Sol a -18° (céu completamente escuro após o pôr)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Nadir</td>
+                            <td class="small">Sol no seu ponto mais baixo (directamente abaixo)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Duração do Dia</td>
+                            <td class="small">Intervalo entre nascer e pôr do sol</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h6 class="mt-3 mb-2">Posição do Sol</h6>
+                <table class="table table-sm mb-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">Termo</th>
+                            <th scope="col">Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="small">Azimute</td>
+                            <td class="small">Rumo da bússola (0° = Norte, 90° = Este, etc.)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Altitude</td>
+                            <td class="small">Ângulo acima do horizonte (negativo = abaixo do horizonte)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h6 class="mt-3 mb-2">Fases Lunares (Intervalo Numérico 0–1)</h6>
+                <table class="table table-sm mb-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">Fase</th>
+                            <th scope="col">Intervalo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="small">Lua Nova</td>
+                            <td class="small">0–0,125</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Crescente</td>
+                            <td class="small">0,125–0,25</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Quarto Crescente</td>
+                            <td class="small">0,25–0,375</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Gibosa Crescente</td>
+                            <td class="small">0,375–0,5</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Lua Cheia</td>
+                            <td class="small">0,5–0,625</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Gibosa Minguante</td>
+                            <td class="small">0,625–0,75</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Quarto Minguante</td>
+                            <td class="small">0,75–0,875</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Minguante</td>
+                            <td class="small">0,875–1</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h6 class="mt-3 mb-2">Dados Lunares Adicionais</h6>
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Termo</th>
+                            <th scope="col">Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="small">Nascer da Lua</td>
+                            <td class="small">Hora do aparecimento da Lua acima do horizonte</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Pôr da Lua</td>
+                            <td class="small">Hora do desaparecimento da Lua abaixo do horizonte</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Iluminação</td>
+                            <td class="small">Percentagem da superfície lunar iluminada</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Distância</td>
+                            <td class="small">Distância da Lua em quilómetros</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Azimute (Lua)</td>
+                            <td class="small">Rumo da Lua (0° = Norte, 90° = Este, etc.)</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Altitude (Lua)</td>
+                            <td class="small">Ângulo da Lua acima do horizonte</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# Sea-State Forecast Terms #}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#seaStateData" aria-expanded="false" aria-controls="seaStateData">
+                <i class="bi bi-water me-2" aria-hidden="true"></i>Termos de Previsão de Estado do Mar
+            </button>
+        </h2>
+        <div id="seaStateData" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">
+                <p class="small text-body-secondary mb-3">Termos relacionados com a previsão de estado do mar fornecida pela API IPMA.</p>
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Termo</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Unidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="small">Altura da Onda</td>
+                            <td class="small">Altura significativa de ondas geradas pelo vento (média do terço superior das ondas)</td>
+                            <td class="small">m</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Período da Onda</td>
+                            <td class="small">Período dominante entre cristas sucessivas</td>
+                            <td class="small">s</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Direcção da Onda</td>
+                            <td class="small">Direcção do rumo das ondas</td>
+                            <td class="small">compasso</td>
+                        </tr>
+                        <tr>
+                            <td class="small">Mar Total</td>
+                            <td class="small">Altura combinada de vagas (swell) e ondas geradas pelo vento</td>
+                            <td class="small">m</td>
+                        </tr>
+                        <tr>
+                            <td class="small">TSM (Temperatura da Superfície do Mar)</td>
+                            <td class="small">Temperatura da água ao nível da superfície</td>
+                            <td class="small">°C</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# UV Index #}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uvIndexData" aria-expanded="false" aria-controls="uvIndexData">
+                <i class="bi bi-sun me-2" aria-hidden="true"></i>Índice UV
+            </button>
+        </h2>
+        <div id="uvIndexData" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">
+                <p class="small text-body-secondary mb-3">Escala global de índice UV da Organização Mundial de Saúde (OMS), utilizada pelo IPMA.</p>
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nível</th>
+                            <th scope="col">Intervalo</th>
+                            <th scope="col">Recomendação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge bg-success">Baixo</span></td>
+                            <td class="small">0–2</td>
+                            <td class="small">Nenhuma protecção necessária.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge text-dark" style="background-color: #ffc107;">Moderado</span></td>
+                            <td class="small">3–5</td>
+                            <td class="small">Protecção recomendada: chapéu, óculos escuros, FPS 30+.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-warning text-dark">Elevado</span></td>
+                            <td class="small">6–7</td>
+                            <td class="small">Evitar sol 11h-16h; FPS 30+, sombra, vestuário.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-danger">Muito Elevado</span></td>
+                            <td class="small">8–10</td>
+                            <td class="small">Protecção extra; evitar estar ao ar livre 11h-16h.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge" style="background-color: #9c27b0;">Extremo</span></td>
+                            <td class="small">11+</td>
+                            <td class="small">Ficar em espaços interiores ao meio-dia; protecção total no exterior.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# Bivalve Harvesting #}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bivalveData" aria-expanded="false" aria-controls="bivalveData">
+                <i class="bi bi-bug me-2" aria-hidden="true"></i>Recolha de Bivalves
+            </button>
+        </h2>
+        <div id="bivalveData" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">
+                <p class="small text-body-secondary mb-3">Estados de disponibilidade de recolha em zonas de produção de moluscos bivalves. Nota: As zonas podem ter espécies interditas mesmo quando o estado geral é "aberto".</p>
+                <table class="table table-sm mb-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge bg-success">Aberta</span></td>
+                            <td class="small">Recolha permitida para todas as espécies.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge text-dark" style="background-color: #ffc107;">Parcialmente Aberta</span></td>
+                            <td class="small">Recolha permitida para algumas espécies; outras interditas.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-warning text-dark">Parcialmente Fechada</span></td>
+                            <td class="small">Recolha restrita; algumas espécies interditas.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-danger">Fechada</span></td>
+                            <td class="small">Recolha proibida para todas as espécies.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-secondary">Desconhecida</span></td>
+                            <td class="small">Estado não disponível.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h6 class="mt-3 mb-2">Classificação Sanitária Europeia</h6>
+                <p class="small mb-0">As classificações sanitárias seguem os padrões de moluscos bivalves da União Europeia:</p>
+                <ul class="small mb-0 ps-3">
+                    <li><strong>A:</strong> Pronta para consumo directo</li>
+                    <li><strong>B:</strong> Depuração necessária</li>
+                    <li><strong>C:</strong> Relocalização necessária</li>
+                    <li><strong>NA:</strong> Não aplicável</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -8,6 +8,7 @@ use App\Controller\Forecast\Meteorology\FireRiskController;
 use App\Controller\Forecast\Meteorology\UvController;
 use App\Controller\Forecast\Oceanography\SeaController;
 use App\Controller\Forecast\Warnings\WarningController;
+use App\Controller\GlossaryController;
 use App\Controller\HomeController;
 use App\Controller\Observation\Biology\BivalveController;
 use App\Controller\Observation\Climate\ClimateController;
@@ -162,6 +163,12 @@ final class RouteLoader
         $routes->add('terms', new Route(
             path: '/terms',
             defaults: ['_controller' => [TermsController::class, 'index']],
+            methods: ['GET'],
+        ));
+
+        $routes->add('glossary', new Route(
+            path: '/glossary',
+            defaults: ['_controller' => [GlossaryController::class, 'index']],
             methods: ['GET'],
         ));
 

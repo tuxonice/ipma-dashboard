@@ -70,6 +70,8 @@ nav:
     bivalves_sub: "Interdições de apanha"
     climate: "Clima"
     terms: "Termos"
+    glossary: "Glossário"
+    glossary_sub: "Escalas e terminologia IPMA"
     skip_to_content: "Saltar para o conteúdo principal"
     main: "Navegação principal"
 
@@ -247,6 +249,7 @@ climate:
     title: "Clima · IPMA Dashboard"
     heading: "Observações climáticas"
     subtitle: "Séries diárias publicadas pelo IPMA por município (CSV). A base de dados abrange apenas o continente."
+    filter_placeholder: "Filtrar por nome de município…"
     none_available: "Não há municípios disponíveis."
     municipality_one: "município"
     municipality_many: "municípios"
