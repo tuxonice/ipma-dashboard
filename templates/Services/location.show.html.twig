@@ -204,27 +204,27 @@
 
             {# ── Moon card ────────────────────────────────────────────────── #}
             {% if moon_illumination %}
-                {%- set moon_phase = moon_illumination.phase -%}
                 {%- set moon_pct   = (moon_illumination.fraction * 100)|round -%}
-                {%- if moon_phase < 0.0625 or moon_phase >= 0.9375 %}
+                {%- set moon_phase = moon_illumination.phase|default(0) -%}
+                {%- if moon_phase < 0.125 %}
                     {%- set moon_phase_key = 'moon_phase_new' -%}
                     {%- set moon_char = '🌑' -%}
-                {%- elseif moon_phase < 0.1875 %}
+                {%- elseif moon_phase < 0.25 %}
                     {%- set moon_phase_key = 'moon_phase_waxing_crescent' -%}
                     {%- set moon_char = '🌒' -%}
-                {%- elseif moon_phase < 0.3125 %}
+                {%- elseif moon_phase < 0.375 %}
                     {%- set moon_phase_key = 'moon_phase_first_quarter' -%}
                     {%- set moon_char = '🌓' -%}
-                {%- elseif moon_phase < 0.4375 %}
+                {%- elseif moon_phase < 0.5 %}
                     {%- set moon_phase_key = 'moon_phase_waxing_gibbous' -%}
                     {%- set moon_char = '🌔' -%}
-                {%- elseif moon_phase < 0.5625 %}
+                {%- elseif moon_phase < 0.625 %}
                     {%- set moon_phase_key = 'moon_phase_full' -%}
                     {%- set moon_char = '🌕' -%}
-                {%- elseif moon_phase < 0.6875 %}
+                {%- elseif moon_phase < 0.75 %}
                     {%- set moon_phase_key = 'moon_phase_waning_gibbous' -%}
                     {%- set moon_char = '🌖' -%}
-                {%- elseif moon_phase < 0.8125 %}
+                {%- elseif moon_phase < 0.875 %}
                     {%- set moon_phase_key = 'moon_phase_last_quarter' -%}
                     {%- set moon_char = '🌗' -%}
                 {%- else %}

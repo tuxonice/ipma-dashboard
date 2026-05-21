@@ -151,9 +151,8 @@ final class LocationController
             // forecast view still renders. (The /warnings page surfaces errors.)
         }
 
-        $todayLocal = new DateTime('today', $tz);
         $nowLocal   = new DateTime('now', $tz);
-        $sunCalc   = new SunCalc($todayLocal, $location->latitude, $location->longitude);
+        $sunCalc   = new SunCalc($nowLocal, $location->latitude, $location->longitude);
         $sunTimes  = $sunCalc->getSunTimes();
 
         $toLocal = static function (?DateTime $dt) use ($tz): ?DateTimeImmutable {
