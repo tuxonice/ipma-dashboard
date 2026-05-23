@@ -10,6 +10,10 @@ Weather information dashboard for Portugal, powered by the
 [IPMA Open API](https://api.ipma.pt/) and the
 [`tuxonice/ipma-api`](https://github.com/tuxonice/ipma-api) PHP client.
 
+> [!IMPORTANT]
+> This project is unofficial and is not affiliated with, endorsed by, or maintained by IPMA, I.P.
+> It only provides a visual dashboard for the public API available at https://api.ipma.pt/.
+
 Built on a lightweight custom framework assembled from Symfony components
 (`http-foundation`, `http-kernel`, `routing`, `dependency-injection`,
 `event-dispatcher`, `translation`, `twig-bridge`, `cache`) with Twig templates
