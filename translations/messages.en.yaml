@@ -89,6 +89,7 @@ footer:
 home:
     title: "IPMA Dashboard"
     intro: "A weather information dashboard for Portugal, powered by the <a href=\"https://api.ipma.pt/\" target=\"_blank\" rel=\"noopener\">IPMA Open API</a>"
+    disclaimer: "This project is unofficial and is not affiliated with, endorsed by, or maintained by IPMA, I.P. It only provides a visual dashboard for the public API available at api.ipma.pt."
     cards:
         locations_title: "Locations"
         locations_body: "Browse districts and municipalities available from IPMA."

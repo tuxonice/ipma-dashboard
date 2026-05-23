@@ -88,7 +88,8 @@ footer:
 
 home:
     title: "IPMA Dashboard"
-    intro: "Painel de informação meteorológica para Portugal, alimentado pela <a href=\"https://api.ipma.pt/\" target=\"_blank\" rel=\"noopener\">API do IPMA</a>."
+    intro: "Painel de informação meteorológica para Portugal, com utilização da <a href=\"https://api.ipma.pt/\" target=\"_blank\" rel=\"noopener\">API do IPMA</a>."
+    disclaimer: "Este projeto não é oficial, afiliado, endossado nem mantido pelo IPMA, I.P. Serve apenas como painel visual para a API pública disponível em api.ipma.pt."
     cards:
         locations_title: "Localidades"
         locations_body: "Ver distritos e municípios disponíveis no IPMA."
