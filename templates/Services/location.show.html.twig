@@ -32,11 +32,11 @@
                     <dt class="col-sm-4 col-md-3">{{ 'location.global_id'|trans }}</dt>
                     <dd class="col-sm-8 col-md-9"><code>{{ location.globalIdLocal }}</code></dd>
 
-                    <dt class="col-sm-4 col-md-3">{{ 'location.district_id'|trans }}</dt>
-                    <dd class="col-sm-8 col-md-9">{{ location.idDistrict }}</dd>
+{#                    <dt class="col-sm-4 col-md-3">{{ 'location.district_id'|trans }}</dt>#}
+{#                    <dd class="col-sm-8 col-md-9">{{ location.idDistrict }}</dd>#}
 
-                    <dt class="col-sm-4 col-md-3">{{ 'location.municipality_id'|trans }}</dt>
-                    <dd class="col-sm-8 col-md-9">{{ location.idMunicipality }}</dd>
+{#                    <dt class="col-sm-4 col-md-3">{{ 'location.municipality_id'|trans }}</dt>#}
+{#                    <dd class="col-sm-8 col-md-9">{{ location.idMunicipality }}</dd>#}
 
                     <dt class="col-sm-4 col-md-3">{{ 'location.warning_area'|trans }}</dt>
                     <dd class="col-sm-8 col-md-9"><code>{{ location.idWarningArea }}</code></dd>
@@ -176,10 +176,10 @@
                                 ['bi-moon-fill',              'nadir',           nadir],
                             ] -%}
                             {% for row in sun_rows %}
-                                <dt class="col-6 col-sm-5 col-md-4 pb-2">
+                                <dt class="col-6 col-sm-7 col-md-7 col-lg-7 pb-2">
                                     <i class="bi {{ row[0] }} me-1 text-warning" aria-hidden="true"></i>{{ ('location.' ~ row[1])|trans }}
                                 </dt>
-                                <dd class="col-6 col-sm-7 col-md-8 pb-2">
+                                <dd class="col-6 col-sm-5 col-md-5 col-lg-5 pb-2">
                                     {% if row[2] %}
                                         {{ row[2]|date('H:i', timezone) }}
                                         <span class="text-body-tertiary ms-1">({{ timezone }})</span>
@@ -243,20 +243,20 @@
                             <div class="fw-semibold fs-5">{{ ('location.' ~ moon_phase_key)|trans }}</div>
                             <dl class="row text-start w-100 mb-0 small mt-2">
                                 {% if moonrise %}
-                                    <dt class="col-6">{{ 'location.moonrise'|trans }}</dt>
-                                    <dd class="col-6">{{ moonrise|date('H:i', timezone) }} <span class="text-body-tertiary">({{ timezone }})</span></dd>
+                                    <dt class="col-6 col-sm-6 col-md-6 col-lg-5 pb-2">{{ 'location.moonrise'|trans }}</dt>
+                                    <dd class="col-6 col-sm-6 col-md-6 col-lg-7 pb-2">{{ moonrise|date('H:i', timezone) }} <span class="text-body-tertiary">({{ timezone }})</span></dd>
                                 {% endif %}
                                 {% if moonset %}
-                                    <dt class="col-6">{{ 'location.moonset'|trans }}</dt>
-                                    <dd class="col-6">{{ moonset|date('H:i', timezone) }} <span class="text-body-tertiary">({{ timezone }})</span></dd>
+                                    <dt class="col-6 col-sm-6 col-md-6 col-lg-5 pb-2">{{ 'location.moonset'|trans }}</dt>
+                                    <dd class="col-6 col-sm-6 col-md-6 col-lg-7 pb-2">{{ moonset|date('H:i', timezone) }} <span class="text-body-tertiary">({{ timezone }})</span></dd>
                                 {% endif %}
-                                <dt class="col-6">{{ 'location.moon_illumination'|trans }}</dt>
-                                <dd class="col-6">{{ moon_pct }}%</dd>
-                                <dt class="col-6">{{ 'location.moon_phase'|trans }}</dt>
-                                <dd class="col-6">{{ moon_illumination.phase|number_format(3) }}</dd>
+                                <dt class="col-6 col-sm-6 col-md-6 col-lg-5 pb-2">{{ 'location.moon_illumination'|trans }}</dt>
+                                <dd class="col-6 col-sm-6 col-md-6 col-lg-7 pb-2">{{ moon_pct }}%</dd>
+                                <dt class="col-6 col-sm-6 col-md-6 col-lg-5 pb-2">{{ 'location.moon_phase'|trans }}</dt>
+                                <dd class="col-6 col-sm-6 col-md-6 col-lg-7 pb-2">{{ moon_illumination.phase|number_format(3) }}</dd>
                                 {% if moon_distance_km %}
-                                    <dt class="col-6">{{ 'location.moon_distance'|trans }}</dt>
-                                    <dd class="col-6">{{ moon_distance_km|number_format(0) }} km</dd>
+                                    <dt class="col-6 col-sm-6 col-md-6 col-lg-5 pb-2">{{ 'location.moon_distance'|trans }}</dt>
+                                    <dd class="col-6 col-sm-6 col-md-6 col-lg-7 pb-2">{{ moon_distance_km|number_format(0) }} km</dd>
                                 {% endif %}
                             </dl>
                         </div>

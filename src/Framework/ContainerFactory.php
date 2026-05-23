@@ -8,6 +8,7 @@ use App\Controller\Forecast\Meteorology\FireRiskController;
 use App\Controller\Forecast\Meteorology\UvController;
 use App\Controller\Forecast\Oceanography\SeaController;
 use App\Controller\Forecast\Warnings\WarningController;
+use App\Controller\GlossaryController;
 use App\Controller\HomeController;
 use App\Controller\Observation\Biology\BivalveController;
 use App\Controller\Observation\Climate\ClimateController;
@@ -239,6 +240,10 @@ final class ContainerFactory
             ->addArgument(new Reference(TranslatorInterface::class));
 
         $container->register(TermsController::class, TermsController::class)
+            ->setPublic(true)
+            ->addArgument(new Reference('twig'));
+
+        $container->register(GlossaryController::class, GlossaryController::class)
             ->setPublic(true)
             ->addArgument(new Reference('twig'));
 

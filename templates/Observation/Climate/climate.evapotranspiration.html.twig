@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% set active = 'climate' %}
-{% block title %}{{ location.name }} — Evapotranspiration · IPMA Dashboard{% endblock %}
+{% block title %}{{ 'climate.page_et0_title'|trans({'%name%': location.name}) }}{% endblock %}
 
 {% block body %}
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('climate_index') }}">Climate</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('home') }}">{{ 'common.home'|trans }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('climate_index') }}">{{ 'nav.climate'|trans }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">
-                {{ location.name }} — Evapotranspiration
+                {{ location.name }} — {{ 'climate.evapotranspiration'|trans }}
             </li>
         </ol>
     </nav>
@@ -18,19 +18,19 @@
         <div>
             <h1 class="h3 mb-1">
                 <i class="bi bi-droplet-half text-success me-2" aria-hidden="true"></i>
-                {{ location.name }} — Daily reference evapotranspiration (ET<sub>0</sub>)
+                {{ 'climate.h1_et0'|trans({'%name%': location.name})|raw }}
             </h1>
             <p class="text-body-secondary mb-0">
                 {{ district_label }} · DICO {{ dico }} ·
                 <a href="{{ path('locations_show', { globalIdLocal: location.globalIdLocal }) }}">
-                    Forecast for {{ location.name }}
+                    {{ 'climate.forecast_link'|trans({'%name%': location.name}) }}
                 </a>
                 ·
-                <a href="{{ path('climate_max_temperature', { globalIdLocal: location.globalIdLocal }) }}">Max temperature</a>
+                <a href="{{ path('climate_max_temperature', { globalIdLocal: location.globalIdLocal }) }}">{{ 'climate.max_temperature'|trans }}</a>
                 ·
-                <a href="{{ path('climate_min_temperature', { globalIdLocal: location.globalIdLocal }) }}">Min temperature</a>
+                <a href="{{ path('climate_min_temperature', { globalIdLocal: location.globalIdLocal }) }}">{{ 'climate.min_temperature'|trans }}</a>
                 ·
-                <a href="{{ path('climate_precipitation', { globalIdLocal: location.globalIdLocal }) }}">Precipitation</a>
+                <a href="{{ path('climate_precipitation', { globalIdLocal: location.globalIdLocal }) }}">{{ 'climate.precipitation'|trans }}</a>
             </p>
         </div>
     </div>
@@ -38,11 +38,11 @@
     {% if error %}
         <div class="alert alert-danger" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
-            Could not load the climate series: {% if app_debug %}<code>{{ error }}</code>{% endif %}
+            {{ 'climate.load_series_error'|trans }}{% if app_debug %}<code>{{ error }}</code>{% endif %}
         </div>
     {% elseif records is empty %}
         <div class="alert alert-warning" role="alert">
-            IPMA returned no records for this municipality.
+            {{ 'climate.no_records'|trans }}
         </div>
     {% else %}
         {% set point_count = chart.points|length %}
@@ -50,7 +50,7 @@
             <div class="col-6 col-md-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="small text-body-secondary">Observations</div>
+                        <div class="small text-body-secondary">{{ 'climate.stat_observations'|trans }}</div>
                         <div class="h4 mb-0">{{ records|length }}</div>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
             <div class="col-6 col-md-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="small text-body-secondary">Highest mean ET<sub>0</sub></div>
+                        <div class="small text-body-secondary">{{ 'climate.stat_highest_et0'|trans|raw }}</div>
                         <div class="h4 mb-0">
                             {% if chart.max is not null %}{{ chart.max|number_format(2) }} mm{% else %}—{% endif %}
                         </div>
@@ -68,7 +68,7 @@
             <div class="col-6 col-md-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="small text-body-secondary">Lowest mean ET<sub>0</sub></div>
+                        <div class="small text-body-secondary">{{ 'climate.stat_lowest_et0'|trans|raw }}</div>
                         <div class="h4 mb-0">
                             {% if chart.min is not null %}{{ chart.min|number_format(2) }} mm{% else %}—{% endif %}
                         </div>
@@ -78,7 +78,7 @@
             <div class="col-6 col-md-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="small text-body-secondary">Average daily mean</div>
+                        <div class="small text-body-secondary">{{ 'climate.stat_avg_daily'|trans }}</div>
                         <div class="h4 mb-0">
                             {% if chart.avg is not null %}{{ chart.avg|number_format(2) }} mm{% else %}—{% endif %}
                         </div>
@@ -96,7 +96,7 @@
             {% if span == 0 %}{% set span = 1 %}{% endif %}
             <div class="card mb-4">
                 <div class="card-body">
-                    <h2 class="h6 text-body-secondary text-uppercase mb-3">Trend (daily mean)</h2>
+                    <h2 class="h6 text-body-secondary text-uppercase mb-3">{{ 'climate.trend_daily_mean'|trans }}</h2>
                     <svg viewBox="0 0 {{ chart_width }} {{ chart_height }}"
                          role="img"
                          aria-label="{{ 'chart.evapotranspiration_trend'|trans({'%location%': location.name}) }}"
@@ -120,7 +120,7 @@
 
         <div class="card">
             <div class="card-header bg-body-tertiary d-flex justify-content-between align-items-center">
-                <span><strong>Daily series</strong></span>
+                <span><strong>{{ 'climate.daily_series'|trans }}</strong></span>
                 <span class="small text-body-secondary">
                     {{ records|first.date }} → {{ records|last.date }}
                 </span>
@@ -129,12 +129,12 @@
                 <table class="table table-sm table-striped mb-0 align-middle">
                     <thead class="sticky-top bg-body-tertiary">
                         <tr>
-                            <th scope="col">Date</th>
-                            <th scope="col" class="text-end">Min (mm)</th>
-                            <th scope="col" class="text-end">Max (mm)</th>
-                            <th scope="col" class="text-end">Range (mm)</th>
-                            <th scope="col" class="text-end">Mean (mm)</th>
-                            <th scope="col" class="text-end">Std</th>
+                            <th scope="col">{{ 'climate.col_date'|trans }}</th>
+                            <th scope="col" class="text-end">{{ 'climate.col_min'|trans }} (mm)</th>
+                            <th scope="col" class="text-end">{{ 'climate.col_max'|trans }} (mm)</th>
+                            <th scope="col" class="text-end">{{ 'climate.col_range'|trans }} (mm)</th>
+                            <th scope="col" class="text-end">{{ 'climate.col_mean'|trans }} (mm)</th>
+                            <th scope="col" class="text-end">{{ 'climate.col_std'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody>

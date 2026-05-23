@@ -1,16 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% set active = 'climate' %}
-{% block title %}Climate · IPMA Dashboard{% endblock %}
+{% block title %}{{ 'climate.title'|trans }}{% endblock %}
 
 {% block body %}
     <div class="mb-4">
         <h1 class="h3 mb-1">
-            <i class="bi bi-thermometer-half text-primary me-2" aria-hidden="true"></i>Climate observations
+            <i class="bi bi-thermometer-half text-primary me-2" aria-hidden="true"></i>{{ 'climate.heading'|trans }}
         </h1>
         <p class="text-body-secondary mb-0">
-            Daily climate series published by IPMA per municipality (CSV).
-            Dataset currently covers mainland Portugal only.
+            {{ 'climate.subtitle'|trans }}
         </p>
     </div>
 
@@ -18,12 +17,12 @@
         <input type="search"
                id="climate-filter"
                class="form-control"
-               placeholder="Filter by municipality name…"
-               aria-label="Filter municipalities">
+               placeholder="{{ 'climate.filter_placeholder'|trans }}"
+               aria-label="{{ 'common.filter_municipalities'|trans }}">
     </div>
 
     {% if districts is empty %}
-        <div class="alert alert-warning" role="alert">No municipalities available.</div>
+        <div class="alert alert-warning" role="alert">{{ 'climate.none_available'|trans }}</div>
     {% else %}
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3" id="climate-districts">
             {% for district in districts %}
@@ -32,7 +31,7 @@
                         <div class="card-header bg-body-tertiary">
                             <strong>{{ district.label }}</strong>
                             <span class="text-body-secondary small">
-                                · {{ district.locations|length }} municipalit{{ district.locations|length == 1 ? 'y' : 'ies' }}
+                                · {{ district.locations|length }} {{ district.locations|length == 1 ? 'climate.municipality_one'|trans : 'climate.municipality_many'|trans }}
                             </span>
                         </div>
                         <ul class="list-group list-group-flush">
@@ -42,26 +41,26 @@
                                     <span>
                                         <i class="bi bi-geo-alt text-body-secondary me-1" aria-hidden="true"></i>{{ location.name }}
                                     </span>
-                                    <span class="btn-group btn-group-sm" role="group" aria-label="Climate metrics">
+                                    <span class="btn-group btn-group-sm" role="group" aria-label="{{ 'climate.heading'|trans }}">
                                         <a href="{{ path('climate_max_temperature', { globalIdLocal: location.globalIdLocal }) }}"
-                                           class="btn btn-outline-danger" title="Daily max temperature">
-                                            <i class="bi bi-thermometer-high me-1" aria-hidden="true"></i>Max
+                                           class="btn btn-outline-danger" title="{{ 'climate.btn_max_title'|trans }}">
+                                            <i class="bi bi-thermometer-high me-1" aria-hidden="true"></i>{{ 'climate.btn_max'|trans }}
                                         </a>
                                         <a href="{{ path('climate_min_temperature', { globalIdLocal: location.globalIdLocal }) }}"
-                                           class="btn btn-outline-primary" title="Daily min temperature">
-                                            <i class="bi bi-thermometer-low me-1" aria-hidden="true"></i>Min
+                                           class="btn btn-outline-primary" title="{{ 'climate.btn_min_title'|trans }}">
+                                            <i class="bi bi-thermometer-low me-1" aria-hidden="true"></i>{{ 'climate.btn_min'|trans }}
                                         </a>
                                         <a href="{{ path('climate_precipitation', { globalIdLocal: location.globalIdLocal }) }}"
-                                           class="btn btn-outline-info" title="Total daily precipitation">
-                                            <i class="bi bi-cloud-rain-heavy me-1" aria-hidden="true"></i>Rain
+                                           class="btn btn-outline-info" title="{{ 'climate.btn_rain_title'|trans }}">
+                                            <i class="bi bi-cloud-rain-heavy me-1" aria-hidden="true"></i>{{ 'climate.btn_rain'|trans }}
                                         </a>
                                         <a href="{{ path('climate_evapotranspiration', { globalIdLocal: location.globalIdLocal }) }}"
-                                           class="btn btn-outline-success" title="Daily reference evapotranspiration (ET0)">
-                                            <i class="bi bi-droplet-half me-1" aria-hidden="true"></i>ET<sub>0</sub>
+                                           class="btn btn-outline-success" title="{{ 'climate.btn_et0_title'|trans }}">
+                                            <i class="bi bi-droplet-half me-1" aria-hidden="true"></i>{{ 'climate.btn_et0'|trans|raw }}
                                         </a>
                                         <a href="{{ path('climate_pdsi', { globalIdLocal: location.globalIdLocal }) }}"
-                                           class="btn btn-outline-warning" title="Palmer Drought Severity Index (monthly)">
-                                            <i class="bi bi-droplet me-1" aria-hidden="true"></i>PDSI
+                                           class="btn btn-outline-warning" title="{{ 'climate.btn_pdsi_title'|trans }}">
+                                            <i class="bi bi-droplet me-1" aria-hidden="true"></i>{{ 'climate.btn_pdsi'|trans }}
                                         </a>
                                     </span>
                                 </li>

@@ -147,6 +147,14 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link {{ nav_active == 'glossary' ? 'active' : '' }}"
+                       {% if nav_active == 'glossary' %}aria-current="page"{% endif %}
+                       href="{{ path('glossary') }}">
+                        <i class="bi bi-book me-1" aria-hidden="true"></i>{{ 'nav.glossary'|trans }}
+                    </a>
+                </li>
+
                 <li class="nav-item dropdown ms-lg-2">
                     <a class="nav-link dropdown-toggle" href="#" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false"
