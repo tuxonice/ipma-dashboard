@@ -2,3 +2,41 @@
   background-color: #ffeb3b;
   color: #000;
 }
+
+/* Navbar contrast fix — WCAG AA requires 4.5:1 on normal text.
+   Bootstrap's dark-theme navbar sets .nav-link to rgba(255,255,255,.55)
+   which is only ~3.3:1 on bg-primary (#0d6efd). Force full white. */
+.navbar.bg-primary .nav-link,
+.navbar.bg-primary .navbar-brand {
+  color: #fff;
+}
+
+.navbar.bg-primary .nav-link:hover,
+.navbar.bg-primary .nav-link:focus {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.6);
+  text-underline-offset: 3px;
+}
+
+.navbar.bg-primary .nav-link.active,
+.navbar.bg-primary .nav-link[aria-current="page"] {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.85);
+  text-underline-offset: 3px;
+}
+
+/* Footer link contrast fix — links inside .text-body-secondary inherit
+   #6c757d which is ~4.48:1 on white (fails AA for small text).
+   Use the standard link blue which is 4.54:1 and passes AA. */
+footer.container a {
+  color: #0a58ca;
+  text-decoration: underline;
+}
+
+footer.container a:hover,
+footer.container a:focus {
+  color: #084298;
+}

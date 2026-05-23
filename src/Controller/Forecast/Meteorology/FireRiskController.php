@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Forecast\Meteorology;
 
+use App\Framework\RouteLoader;
 use App\Service\Forecast\Meteorology\FireRiskLevel;
 use App\Service\Forecast\Meteorology\FireRiskRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,8 +29,10 @@ final class FireRiskController
 
     public function index(Request $request): Response
     {
-        $dayParam = strtolower((string) $request->query->get('day', 'today'));
-        $day = $dayParam === 'tomorrow'
+        $locale = $request->getLocale();
+        $urlDay = strtolower((string) $request->attributes->get('day', 'today'));
+        $dayKey = $urlDay === RouteLoader::segment('day_tomorrow', $locale) ? 'tomorrow' : 'today';
+        $day = $dayKey === 'tomorrow'
             ? ForecastFireRiskDayEnum::TOMORROW
             : ForecastFireRiskDayEnum::TODAY;
 
@@ -75,13 +78,16 @@ final class FireRiskController
         }
 
         $html = $this->twig->render('Forecast/Meteorology/fire-risk.index.html.twig', [
-            'day' => $dayParam === 'tomorrow' ? 'tomorrow' : 'today',
+            'day' => $dayKey,
             'forecast_date' => $forecastDate,
             'run_date' => $runDate,
             'features_json' => json_encode($features, JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
             'features_count' => count($features),
             'legend' => $legend,
             'error' => $error,
+            // Override matched URL slug with the internal day key so cross-locale
+            // links (hreflang, language switcher) can translate it via LocalizedRoutingExtension.
+            'app_route_params' => ['day' => $dayKey],
         ]);
 
         return new Response($html);

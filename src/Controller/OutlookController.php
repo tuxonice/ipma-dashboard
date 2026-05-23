@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Framework\RouteLoader;
 use App\Service\Forecast\Meteorology\UvIndexLevel;
 use App\Service\Forecast\Meteorology\UvIndexRepository;
 use App\Service\OutlookRepository;
@@ -32,9 +33,9 @@ use Twig\Environment;
 final class OutlookController
 {
     private const DAYS = [
-        'today'     => ['enum' => ForecastDayEnum::TODAY,              'label' => 'outlook.day.today',     'offset' => 0],
-        'tomorrow'  => ['enum' => ForecastDayEnum::TOMORROW,           'label' => 'outlook.day.tomorrow',  'offset' => 1],
-        'day_after' => ['enum' => ForecastDayEnum::DAY_AFTER_TOMORROW, 'label' => 'outlook.day.day_after', 'offset' => 2],
+        'today'     => ['enum' => ForecastDayEnum::TODAY,              'label' => 'outlook.day.today',     'offset' => 0, 'segment' => null],
+        'tomorrow'  => ['enum' => ForecastDayEnum::TOMORROW,           'label' => 'outlook.day.tomorrow',  'offset' => 1, 'segment' => 'day_tomorrow'],
+        'day-after' => ['enum' => ForecastDayEnum::DAY_AFTER_TOMORROW, 'label' => 'outlook.day.day_after', 'offset' => 2, 'segment' => 'day_day_after'],
     ];
 
     public function __construct(
@@ -48,9 +49,15 @@ final class OutlookController
 
     public function index(Request $request): Response
     {
-        $dayKey = strtolower((string) $request->query->get('day', 'today'));
-        if (!isset(self::DAYS[$dayKey])) {
-            $dayKey = 'today';
+        $locale = $request->getLocale();
+        $urlDay = strtolower((string) $request->attributes->get('day', 'today'));
+
+        $dayKey = 'today';
+        foreach (self::DAYS as $key => $meta) {
+            if ($meta['segment'] !== null && RouteLoader::segment($meta['segment'], $locale) === $urlDay) {
+                $dayKey = $key;
+                break;
+            }
         }
         $dayMeta = self::DAYS[$dayKey];
 
@@ -142,6 +149,9 @@ final class OutlookController
             'features_json' => json_encode($features, JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
             'temperature_legend' => TemperatureBand::bands(),
             'error' => $error,
+            // Override matched URL slug with the internal day key so cross-locale
+            // links (hreflang, language switcher) can translate it via LocalizedRoutingExtension.
+            'app_route_params' => ['day' => $dayKey],
         ]));
     }
 
