@@ -46,7 +46,8 @@ final class Kernel implements HttpKernelInterface, TerminableInterface
         );
 
         $routes = RouteLoader::load();
-        $context = new RequestContext();
+        /** @var RequestContext $context */
+        $context = $this->container->get('router.request_context');
         $matcher = new UrlMatcher($routes, $context);
 
         $dispatcher = new EventDispatcher();
@@ -54,6 +55,8 @@ final class Kernel implements HttpKernelInterface, TerminableInterface
         $dispatcher->addSubscriber(new LocaleSubscriber(
             $this->container->get('translator'),
             $this->container->get('twig'),
+            $this->container->get('router.request_context'),
+            $this->container->get('twig.extension.localized_routing'),
         ));
         $dispatcher->addSubscriber(new ExceptionSubscriber(
             $this->container->get('twig'),

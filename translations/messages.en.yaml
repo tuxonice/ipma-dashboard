@@ -1,3 +1,6 @@
+meta:
+    description: "Weather dashboard for Portugal — forecasts, warnings, sea state, fire risk, weather stations and climate data from the IPMA Open API."
+
 common:
     back_to_home: "Back to home"
     weekday_short:
@@ -50,6 +53,7 @@ nav:
     brand: "IPMA Dashboard"
     toggle: "Toggle navigation"
     locations: "Locations"
+    locations_sub: "Districts and municipalities"
     forecast: "Forecast"
     outlook: "Outlook"
     outlook_sub: "Portugal-wide daily forecast"

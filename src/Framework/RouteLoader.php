@@ -28,150 +28,228 @@ use Symfony\Component\Routing\RouteCollection;
  */
 final class RouteLoader
 {
+    /**
+     * Translated path segments per locale.
+     *
+     * Keys are logical segment names; values are per-locale slugs.
+     * Used to build locale-prefixed, translated URLs like /pt/clima or /en/climate.
+     */
+    private const SEGMENTS = [
+        'locations'           => ['pt' => 'localidades',        'en' => 'locations'],
+        'warnings'            => ['pt' => 'avisos',              'en' => 'warnings'],
+        'sea'                 => ['pt' => 'estado-do-mar',       'en' => 'sea-state'],
+        'stations'            => ['pt' => 'estacoes-meteorologicas', 'en' => 'weather-stations'],
+        'stations_map'        => ['pt' => 'mapa',                'en' => 'map'],
+        'fire_risk'           => ['pt' => 'risco-incendio',      'en' => 'fire-risk'],
+        'uv'                  => ['pt' => 'risco-de-uv',         'en' => 'uv-risk'],
+        'outlook'             => ['pt' => 'previsao',            'en' => 'outlook'],
+        'day_tomorrow'        => ['pt' => 'amanha',              'en' => 'tomorrow'],
+        'day_day_after'       => ['pt' => 'depois-de-amanha',    'en' => 'day-after'],
+        'seismic'             => ['pt' => 'informacao-sismica',  'en' => 'seismic-information'],
+        'bivalves'            => ['pt' => 'bivalves',            'en' => 'bivalves'],
+        'climate'             => ['pt' => 'clima',               'en' => 'climate'],
+        'climate_max'         => ['pt' => 'temperatura-maxima',  'en' => 'max-temperature'],
+        'climate_min'         => ['pt' => 'temperatura-minima',  'en' => 'min-temperature'],
+        'climate_precip'      => ['pt' => 'precipitacao',        'en' => 'precipitation'],
+        'climate_et0'         => ['pt' => 'evapotranspiracao',   'en' => 'evapotranspiration'],
+        'climate_pdsi'        => ['pt' => 'pdsi',                'en' => 'pdsi'],
+        'terms'               => ['pt' => 'termos',              'en' => 'terms'],
+        'glossary'            => ['pt' => 'glossario',           'en' => 'glossary'],
+    ];
+
+    /** @var list<string> */
+    public const SUPPORTED_LOCALES = ['pt', 'en'];
+
     public static function load(): RouteCollection
     {
         $routes = new RouteCollection();
 
-        $routes->add('home', new Route(
+        // Root redirect: / → /pt
+        $routes->add('root', new Route(
             path: '/',
-            defaults: ['_controller' => [HomeController::class, 'index']],
+            defaults: ['_controller' => [HomeController::class, 'redirect']],
             methods: ['GET'],
         ));
 
-        $routes->add('locations_index', new Route(
-            path: '/locations',
-            defaults: ['_controller' => [LocationController::class, 'index']],
-            methods: ['GET'],
-        ));
+        foreach (self::SUPPORTED_LOCALES as $locale) {
+            $s = self::SEGMENTS;
 
-        $routes->add('locations_show', new Route(
-            path: '/locations/{globalIdLocal}',
-            defaults: ['_controller' => [LocationController::class, 'show']],
-            requirements: ['globalIdLocal' => '\d+'],
-            methods: ['GET'],
-        ));
+            // Home
+            $routes->add("home.$locale", new Route(
+                path: "/$locale",
+                defaults: ['_controller' => [HomeController::class, 'index'], '_locale' => $locale],
+                methods: ['GET'],
+            ));
 
-        $routes->add('warnings_index', new Route(
-            path: '/warnings',
-            defaults: ['_controller' => [WarningController::class, 'index']],
-            methods: ['GET'],
-        ));
+            // Locations
+            $routes->add("locations_index.$locale", new Route(
+                path: "/$locale/{$s['locations'][$locale]}",
+                defaults: ['_controller' => [LocationController::class, 'index'], '_locale' => $locale],
+                methods: ['GET'],
+            ));
+            $routes->add("locations_show.$locale", new Route(
+                path: "/$locale/{$s['locations'][$locale]}/{globalIdLocal}",
+                defaults: ['_controller' => [LocationController::class, 'show'], '_locale' => $locale],
+                requirements: ['globalIdLocal' => '\d+'],
+                methods: ['GET'],
+            ));
 
-        $routes->add('sea_index', new Route(
-            path: '/sea',
-            defaults: ['_controller' => [SeaController::class, 'index']],
-            methods: ['GET'],
-        ));
+            // Warnings
+            $routes->add("warnings_index.$locale", new Route(
+                path: "/$locale/{$s['warnings'][$locale]}",
+                defaults: ['_controller' => [WarningController::class, 'index'], '_locale' => $locale],
+                methods: ['GET'],
+            ));
 
-        $routes->add('sea_show', new Route(
-            path: '/sea/{globalIdLocal}',
-            defaults: ['_controller' => [SeaController::class, 'show']],
-            requirements: ['globalIdLocal' => '\d+'],
-            methods: ['GET'],
-        ));
+            // Sea
+            $routes->add("sea_index.$locale", new Route(
+                path: "/$locale/{$s['sea'][$locale]}",
+                defaults: ['_controller' => [SeaController::class, 'index'], '_locale' => $locale],
+                methods: ['GET'],
+            ));
+            $routes->add("sea_show.$locale", new Route(
+                path: "/$locale/{$s['sea'][$locale]}/{globalIdLocal}",
+                defaults: ['_controller' => [SeaController::class, 'show'], '_locale' => $locale],
+                requirements: ['globalIdLocal' => '\d+'],
+                methods: ['GET'],
+            ));
 
-        $routes->add('stations_index', new Route(
-            path: '/stations',
-            defaults: ['_controller' => [StationController::class, 'index']],
-            methods: ['GET'],
-        ));
+            // Stations
+            $routes->add("stations_index.$locale", new Route(
+                path: "/$locale/{$s['stations'][$locale]}",
+                defaults: ['_controller' => [StationController::class, 'index'], '_locale' => $locale],
+                methods: ['GET'],
+            ));
+            $routes->add("stations_map.$locale", new Route(
+                path: "/$locale/{$s['stations'][$locale]}/{$s['stations_map'][$locale]}",
+                defaults: ['_controller' => [StationController::class, 'map'], '_locale' => $locale],
+                methods: ['GET'],
+            ));
+            $routes->add("stations_show.$locale", new Route(
+                path: "/$locale/{$s['stations'][$locale]}/{id}",
+                defaults: ['_controller' => [StationController::class, 'show'], '_locale' => $locale],
+                requirements: ['id' => '\d+'],
+                methods: ['GET'],
+            ));
 
-        $routes->add('stations_map', new Route(
-            path: '/stations/map',
-            defaults: ['_controller' => [StationController::class, 'map']],
-            methods: ['GET'],
-        ));
+            // Fire risk
+            $routes->add("fire_risk_index.$locale", new Route(
+                path: "/$locale/{$s['fire_risk'][$locale]}/{day}",
+                defaults: ['_controller' => [FireRiskController::class, 'index'], '_locale' => $locale, 'day' => 'today'],
+                requirements: ['day' => $s['day_tomorrow'][$locale]],
+                methods: ['GET'],
+            ));
 
-        $routes->add('stations_show', new Route(
-            path: '/stations/{id}',
-            defaults: ['_controller' => [StationController::class, 'show']],
-            requirements: ['id' => '\d+'],
-            methods: ['GET'],
-        ));
+            // UV
+            $routes->add("uv_index.$locale", new Route(
+                path: "/$locale/{$s['uv'][$locale]}",
+                defaults: ['_controller' => [UvController::class, 'index'], '_locale' => $locale],
+                methods: ['GET'],
+            ));
 
-        $routes->add('fire_risk_index', new Route(
-            path: '/fire-risk',
-            defaults: ['_controller' => [FireRiskController::class, 'index']],
-            methods: ['GET'],
-        ));
+            // Outlook
+            $routes->add("outlook_index.$locale", new Route(
+                path: "/$locale/{$s['outlook'][$locale]}/{day}",
+                defaults: ['_controller' => [OutlookController::class, 'index'], '_locale' => $locale, 'day' => 'today'],
+                requirements: ['day' => $s['day_tomorrow'][$locale] . '|' . $s['day_day_after'][$locale]],
+                methods: ['GET'],
+            ));
 
-        $routes->add('uv_index', new Route(
-            path: '/uv',
-            defaults: ['_controller' => [UvController::class, 'index']],
-            methods: ['GET'],
-        ));
+            // Seismic
+            $routes->add("seismic_index.$locale", new Route(
+                path: "/$locale/{$s['seismic'][$locale]}",
+                defaults: ['_controller' => [SeismicController::class, 'index'], '_locale' => $locale],
+                methods: ['GET'],
+            ));
 
-        $routes->add('seismic_index', new Route(
-            path: '/seismic',
-            defaults: ['_controller' => [SeismicController::class, 'index']],
-            methods: ['GET'],
-        ));
+            // Bivalves
+            $routes->add("bivalves_index.$locale", new Route(
+                path: "/$locale/{$s['bivalves'][$locale]}",
+                defaults: ['_controller' => [BivalveController::class, 'index'], '_locale' => $locale],
+                methods: ['GET'],
+            ));
 
-        $routes->add('outlook_index', new Route(
-            path: '/outlook',
-            defaults: ['_controller' => [OutlookController::class, 'index']],
-            methods: ['GET'],
-        ));
+            // Climate
+            $routes->add("climate_index.$locale", new Route(
+                path: "/$locale/{$s['climate'][$locale]}",
+                defaults: ['_controller' => [ClimateController::class, 'index'], '_locale' => $locale],
+                methods: ['GET'],
+            ));
+            $routes->add("climate_max_temperature.$locale", new Route(
+                path: "/$locale/{$s['climate'][$locale]}/{$s['climate_max'][$locale]}/{globalIdLocal}",
+                defaults: ['_controller' => [ClimateController::class, 'maxTemperature'], '_locale' => $locale],
+                requirements: ['globalIdLocal' => '\d+'],
+                methods: ['GET'],
+            ));
+            $routes->add("climate_min_temperature.$locale", new Route(
+                path: "/$locale/{$s['climate'][$locale]}/{$s['climate_min'][$locale]}/{globalIdLocal}",
+                defaults: ['_controller' => [ClimateController::class, 'minTemperature'], '_locale' => $locale],
+                requirements: ['globalIdLocal' => '\d+'],
+                methods: ['GET'],
+            ));
+            $routes->add("climate_precipitation.$locale", new Route(
+                path: "/$locale/{$s['climate'][$locale]}/{$s['climate_precip'][$locale]}/{globalIdLocal}",
+                defaults: ['_controller' => [ClimateController::class, 'precipitation'], '_locale' => $locale],
+                requirements: ['globalIdLocal' => '\d+'],
+                methods: ['GET'],
+            ));
+            $routes->add("climate_evapotranspiration.$locale", new Route(
+                path: "/$locale/{$s['climate'][$locale]}/{$s['climate_et0'][$locale]}/{globalIdLocal}",
+                defaults: ['_controller' => [ClimateController::class, 'evapotranspiration'], '_locale' => $locale],
+                requirements: ['globalIdLocal' => '\d+'],
+                methods: ['GET'],
+            ));
+            $routes->add("climate_pdsi.$locale", new Route(
+                path: "/$locale/{$s['climate'][$locale]}/{$s['climate_pdsi'][$locale]}/{globalIdLocal}",
+                defaults: ['_controller' => [ClimateController::class, 'pdsi'], '_locale' => $locale],
+                requirements: ['globalIdLocal' => '\d+'],
+                methods: ['GET'],
+            ));
 
-        $routes->add('bivalves_index', new Route(
-            path: '/bivalves',
-            defaults: ['_controller' => [BivalveController::class, 'index']],
-            methods: ['GET'],
-        ));
+            // Terms
+            $routes->add("terms.$locale", new Route(
+                path: "/$locale/{$s['terms'][$locale]}",
+                defaults: ['_controller' => [TermsController::class, 'index'], '_locale' => $locale],
+                methods: ['GET'],
+            ));
 
-        $routes->add('climate_index', new Route(
-            path: '/climate',
-            defaults: ['_controller' => [ClimateController::class, 'index']],
-            methods: ['GET'],
-        ));
-
-        $routes->add('climate_max_temperature', new Route(
-            path: '/climate/max-temperature/{globalIdLocal}',
-            defaults: ['_controller' => [ClimateController::class, 'maxTemperature']],
-            requirements: ['globalIdLocal' => '\d+'],
-            methods: ['GET'],
-        ));
-
-        $routes->add('climate_min_temperature', new Route(
-            path: '/climate/min-temperature/{globalIdLocal}',
-            defaults: ['_controller' => [ClimateController::class, 'minTemperature']],
-            requirements: ['globalIdLocal' => '\d+'],
-            methods: ['GET'],
-        ));
-
-        $routes->add('climate_precipitation', new Route(
-            path: '/climate/precipitation/{globalIdLocal}',
-            defaults: ['_controller' => [ClimateController::class, 'precipitation']],
-            requirements: ['globalIdLocal' => '\d+'],
-            methods: ['GET'],
-        ));
-
-        $routes->add('climate_evapotranspiration', new Route(
-            path: '/climate/evapotranspiration/{globalIdLocal}',
-            defaults: ['_controller' => [ClimateController::class, 'evapotranspiration']],
-            requirements: ['globalIdLocal' => '\d+'],
-            methods: ['GET'],
-        ));
-
-        $routes->add('climate_pdsi', new Route(
-            path: '/climate/pdsi/{globalIdLocal}',
-            defaults: ['_controller' => [ClimateController::class, 'pdsi']],
-            requirements: ['globalIdLocal' => '\d+'],
-            methods: ['GET'],
-        ));
-
-        $routes->add('terms', new Route(
-            path: '/terms',
-            defaults: ['_controller' => [TermsController::class, 'index']],
-            methods: ['GET'],
-        ));
-
-        $routes->add('glossary', new Route(
-            path: '/glossary',
-            defaults: ['_controller' => [GlossaryController::class, 'index']],
-            methods: ['GET'],
-        ));
+            // Glossary
+            $routes->add("glossary.$locale", new Route(
+                path: "/$locale/{$s['glossary'][$locale]}",
+                defaults: ['_controller' => [GlossaryController::class, 'index'], '_locale' => $locale],
+                methods: ['GET'],
+            ));
+        }
 
         return $routes;
+    }
+
+    public static function segment(string $name, string $locale): string
+    {
+        return self::SEGMENTS[$name][$locale];
+    }
+
+    /**
+     * Returns the logical route name (without locale suffix) for a given full route name.
+     * e.g. "climate_index.pt" → "climate_index"
+     */
+    public static function logicalName(string $routeName): string
+    {
+        foreach (self::SUPPORTED_LOCALES as $locale) {
+            if (str_ends_with($routeName, ".$locale")) {
+                return substr($routeName, 0, -strlen(".$locale"));
+            }
+        }
+
+        return $routeName;
+    }
+
+    /**
+     * Returns the route name for a given logical name and locale.
+     * e.g. ("climate_index", "en") → "climate_index.en"
+     */
+    public static function localizedName(string $logicalName, string $locale): string
+    {
+        return "$logicalName.$locale";
     }
 }

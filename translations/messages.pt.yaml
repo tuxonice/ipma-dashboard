@@ -1,3 +1,6 @@
+meta:
+    description: "Painel meteorológico para Portugal — previsões, avisos, estado do mar, risco de incêndio, estações e dados climáticos da API do IPMA."
+
 common:
     back_to_home: "Voltar ao início"
     weekday_short:
@@ -50,6 +53,7 @@ nav:
     brand: "IPMA Dashboard"
     toggle: "Alternar navegação"
     locations: "Localidades"
+    locations_sub: "Distritos e municípios"
     forecast: "Previsão"
     outlook: "Panorama"
     outlook_sub: "Previsão diária para todo o país"

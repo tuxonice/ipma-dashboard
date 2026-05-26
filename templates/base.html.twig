@@ -3,7 +3,32 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{{ 'nav.brand'|trans }}{% endblock %}</title>
+    {% set _page_title %}{% block title %}{{ 'nav.brand'|trans }}{% endblock %}{% endset %}
+    <title>{{ _page_title }}</title>
+
+    {% set _meta_desc %}{% block meta_description %}{{ 'meta.description'|trans }}{% endblock %}{% endset %}
+    <meta name="description" content="{{ _meta_desc }}">
+
+    {# Canonical URL #}
+    {% set _canonical = app_request is defined ? (app_request.schemeAndHttpHost ~ app_request.pathInfo) : '' %}
+    {% if _canonical %}<link rel="canonical" href="{{ _canonical }}">{% endif %}
+
+    {# hreflang alternates — switch locale suffix in route name, keep same params #}
+    {% if app_current_route is defined and app_current_route %}
+        {% set _logical = app_current_route|replace({'.pt': '', '.en': ''}) %}
+        {% set _params = (app_route_params|default({}))|filter((v, k) => k != '_locale') %}
+        {% for loc in app_supported_locales|default(['pt', 'en']) %}
+            <link rel="alternate" hreflang="{{ loc }}" href="{{ url(_logical ~ '.' ~ loc, _params) }}">
+        {% endfor %}
+        <link rel="alternate" hreflang="x-default" href="{{ url(_logical ~ '.pt', _params) }}">
+    {% endif %}
+
+    {# Open Graph #}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ 'nav.brand'|trans }}">
+    <meta property="og:title" content="{{ _page_title }}">
+    <meta property="og:description" content="{{ _meta_desc }}">
+    {% if _canonical %}<meta property="og:url" content="{{ _canonical }}">{% endif %}
 
     {# Bootstrap 5 via CDN (no local build step). #}
     <link
@@ -32,7 +57,7 @@
     {{ 'nav.skip_to_content'|trans }}
 </a>
 {% set nav_active = active|default('') %}
-{% set forecast_active_keys = ['outlook', 'sea', 'warnings', 'uv', 'fire_risk'] %}
+{% set forecast_active_keys = ['locations', 'outlook', 'sea', 'warnings', 'uv', 'fire_risk'] %}
 {% set observation_active_keys = ['stations', 'seismic', 'bivalves'] %}
 {% set current_locale = app_locale|default('pt') %}
 
@@ -49,20 +74,19 @@
         </button>
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav ms-auto gap-lg-1 align-items-lg-center">
-                <li class="nav-item">
-                    <a class="nav-link {{ nav_active == 'locations' ? 'active' : '' }}"
-                       {% if nav_active == 'locations' %}aria-current="page"{% endif %}
-                       href="{{ path('locations_index') }}">
-                        <i class="bi bi-geo-alt me-1" aria-hidden="true"></i>{{ 'nav.locations'|trans }}
-                    </a>
-                </li>
-
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ nav_active in forecast_active_keys ? 'active' : '' }}"
                        href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-cloud-sun me-1" aria-hidden="true"></i>{{ 'nav.forecast'|trans }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item {{ nav_active == 'locations' ? 'active' : '' }}"
+                               href="{{ path('locations_index') }}">
+                                <i class="bi bi-geo-alt me-2" aria-hidden="true"></i>{{ 'nav.locations'|trans }}
+                                <span class="d-block small text-body-secondary">{{ 'nav.locations_sub'|trans }}</span>
+                            </a>
+                        </li>
                         <li>
                             <a class="dropdown-item {{ nav_active == 'outlook' ? 'active' : '' }}"
                                href="{{ path('outlook_index') }}">
@@ -140,18 +164,18 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {{ nav_active == 'terms' ? 'active' : '' }}"
-                       {% if nav_active == 'terms' %}aria-current="page"{% endif %}
-                       href="{{ path('terms') }}">
-                        <i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>{{ 'nav.terms'|trans }}
-                    </a>
-                </li>
-
-                <li class="nav-item">
                     <a class="nav-link {{ nav_active == 'glossary' ? 'active' : '' }}"
                        {% if nav_active == 'glossary' %}aria-current="page"{% endif %}
                        href="{{ path('glossary') }}">
                         <i class="bi bi-book me-1" aria-hidden="true"></i>{{ 'nav.glossary'|trans }}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {{ nav_active == 'terms' ? 'active' : '' }}"
+                       {% if nav_active == 'terms' %}aria-current="page"{% endif %}
+                       href="{{ path('terms') }}">
+                        <i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>{{ 'nav.terms'|trans }}
                     </a>
                 </li>
 
@@ -162,10 +186,12 @@
                         <i class="bi bi-translate me-1" aria-hidden="true"></i>{{ current_locale|upper }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
+                        {% set _logical = app_current_route is defined ? app_current_route|replace({'.pt': '', '.en': ''}) : 'home' %}
+                        {% set _params = (app_route_params|default({}))|filter((v, k) => k != '_locale') %}
                         {% for loc in app_supported_locales|default(['pt','en']) %}
                             <li>
                                 <a class="dropdown-item {{ current_locale == loc ? 'active' : '' }}"
-                                   href="?lang={{ loc }}"
+                                   href="{{ path(_logical ~ '.' ~ loc, _params) }}"
                                    {% if current_locale == loc %}aria-current="page"{% endif %}>
                                     {{ ('lang.' ~ loc)|trans }}
                                     <span class="text-body-secondary small ms-1">({{ loc|upper }})</span>

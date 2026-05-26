@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Framework;
 
+use App\Framework\LocalizedRoutingExtension;
 use App\Controller\Forecast\Meteorology\FireRiskController;
 use App\Controller\Forecast\Meteorology\UvController;
 use App\Controller\Forecast\Oceanography\SeaController;
@@ -78,7 +79,8 @@ final class ContainerFactory
             ]);
 
         // --- Routing (for URL generation inside templates) ------------------
-        $container->register('router.request_context', RequestContext::class);
+        $container->register('router.request_context', RequestContext::class)
+            ->setPublic(true);
         $container->register('router.url_generator', UrlGenerator::class)
             ->setFactory([UrlGeneratorFactory::class, 'create'])
             ->addArgument(new Reference('router.request_context'));
@@ -88,6 +90,14 @@ final class ContainerFactory
             ->addArgument(new Reference('router.url_generator'));
         $container->getDefinition('twig')
             ->addMethodCall('addExtension', [new Reference('twig.extension.routing')]);
+
+        // Localized routing extension — overrides path()/url() to auto-suffix
+        // route names with the current locale (e.g. 'home' → 'home.pt').
+        $container->register('twig.extension.localized_routing', LocalizedRoutingExtension::class)
+            ->setPublic(true)
+            ->addArgument(new Reference('router.url_generator'));
+        $container->getDefinition('twig')
+            ->addMethodCall('addExtension', [new Reference('twig.extension.localized_routing')]);
 
         // --- Translation (PT default, EN fallback) -------------------------
         $container->register('translator', \Symfony\Component\Translation\Translator::class)
