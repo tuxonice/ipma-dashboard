@@ -1,7 +1,7 @@
 DC      ?= docker compose
 APP     ?= app
 
-.PHONY: help start up stop stop build install composer-install logs shell test phpcs phpstan check
+.PHONY: help start up stop stop build install composer-install logs shell test phpcs phpstan check seo-urls
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"; printf "Targets:\n"} /^[a-zA-Z_-]+:.*##/ {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -38,3 +38,6 @@ phpstan: ## Run PHPStan analysis using phpstan.neon inside the app container
 
 check: ## Run all checks: phpcs, phpstan, and tests
 	$(MAKE) phpcs && $(MAKE) phpstan && $(MAKE) test
+
+seo-urls: ## Stamp public/sitemap.xml & robots.txt with APP_URL from .env
+	$(DC) run --rm $(APP) php bin/update-seo-urls.php

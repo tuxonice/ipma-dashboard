@@ -67,7 +67,7 @@
                 {% if forecast_updated_at %}
                     <span class="small text-body-secondary">
                         {{ 'common.updated'|trans }} {{ forecast_updated_at|date('Y-m-d H:i', timezone) }}
-                        <span class="text-body-tertiary">({{ timezone }})</span>
+                        <span class="text-body-secondary">({{ timezone }})</span>
                     </span>
                 {% endif %}
             </div>
@@ -182,7 +182,7 @@
                                 <dd class="col-6 col-sm-5 col-md-5 col-lg-5 pb-2">
                                     {% if row[2] %}
                                         {{ row[2]|date('H:i', timezone) }}
-                                        <span class="text-body-tertiary ms-1">({{ timezone }})</span>
+                                        <span class="text-body-secondary ms-1">({{ timezone }})</span>
                                     {% else %}
                                         <span class="text-body-secondary">—</span>
                                     {% endif %}
@@ -244,11 +244,11 @@
                             <dl class="row text-start w-100 mb-0 small mt-2">
                                 {% if moonrise %}
                                     <dt class="col-6 col-sm-6 col-md-6 col-lg-5 pb-2">{{ 'location.moonrise'|trans }}</dt>
-                                    <dd class="col-6 col-sm-6 col-md-6 col-lg-7 pb-2">{{ moonrise|date('H:i', timezone) }} <span class="text-body-tertiary">({{ timezone }})</span></dd>
+                                    <dd class="col-6 col-sm-6 col-md-6 col-lg-7 pb-2">{{ moonrise|date('H:i', timezone) }} <span class="text-body-secondary">({{ timezone }})</span></dd>
                                 {% endif %}
                                 {% if moonset %}
                                     <dt class="col-6 col-sm-6 col-md-6 col-lg-5 pb-2">{{ 'location.moonset'|trans }}</dt>
-                                    <dd class="col-6 col-sm-6 col-md-6 col-lg-7 pb-2">{{ moonset|date('H:i', timezone) }} <span class="text-body-tertiary">({{ timezone }})</span></dd>
+                                    <dd class="col-6 col-sm-6 col-md-6 col-lg-7 pb-2">{{ moonset|date('H:i', timezone) }} <span class="text-body-secondary">({{ timezone }})</span></dd>
                                 {% endif %}
                                 <dt class="col-6 col-sm-6 col-md-6 col-lg-5 pb-2">{{ 'location.moon_illumination'|trans }}</dt>
                                 <dd class="col-6 col-sm-6 col-md-6 col-lg-7 pb-2">{{ moon_pct }}%</dd>

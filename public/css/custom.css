@@ -28,6 +28,18 @@
   text-underline-offset: 3px;
 }
 
+/* Breadcrumb link contrast fix — Bootstrap links use #0d6efd which is only
+   ~4.27:1 on the light bg-body-tertiary background (fails AA for normal text).
+   Use the darker link blue (#0a58ca, ~4.6:1) so breadcrumb trails pass AA. */
+.breadcrumb a {
+  color: #0a58ca;
+}
+
+.breadcrumb a:hover,
+.breadcrumb a:focus {
+  color: #084298;
+}
+
 /* Footer link contrast fix — links inside .text-body-secondary inherit
    #6c757d which is ~4.48:1 on white (fails AA for small text).
    Use the standard link blue which is 4.54:1 and passes AA. */
