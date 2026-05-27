@@ -26,6 +26,7 @@ use App\Service\ForecastRepository;
 use App\Service\IpmaConnectorFactory;
 use App\Service\Observation\Biology\BivalveRepository;
 use App\Service\Observation\Climate\ClimateRepository;
+use App\Service\Observation\Meteorology\StationExtremesService;
 use App\Service\Observation\Meteorology\StationHourlyRepository;
 use App\Service\Observation\Meteorology\StationObservationRepository;
 use App\Service\Observation\Meteorology\StationRepository;
@@ -183,9 +184,14 @@ final class ContainerFactory
             ->addArgument(new Reference(CacheInterface::class));
 
         // --- Controllers (public so ControllerResolver can fetch them) ------
+        $container->register(StationExtremesService::class, StationExtremesService::class)
+            ->addArgument(new Reference(StationRepository::class))
+            ->addArgument(new Reference(StationObservationRepository::class));
+
         $container->register(HomeController::class, HomeController::class)
             ->setPublic(true)
-            ->addArgument(new Reference('twig'));
+            ->addArgument(new Reference('twig'))
+            ->addArgument(new Reference(StationExtremesService::class));
 
         $container->register(LocationController::class, LocationController::class)
             ->setPublic(true)

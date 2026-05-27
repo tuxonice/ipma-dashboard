@@ -107,6 +107,13 @@ home:
         fire_risk_body: "Risco rural de incêndio (RCM) para hoje e amanhã por município, em mapa."
         climate_title: "Clima"
         climate_body: "Histórico diário de temperatura máxima para municípios do continente."
+    extremes:
+        title: "Extremos de temperatura actuais"
+        title_24h: "Extremos de temperatura (últimas 24h)"
+        hottest: "Mais quente"
+        coldest: "Mais frio"
+        all_stations: "Todas as estações"
+        no_data: "Dados das estações indisponíveis"
 
 location:
     title: "Localidades · IPMA Dashboard"

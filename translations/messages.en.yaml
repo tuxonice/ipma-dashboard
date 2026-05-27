@@ -107,6 +107,13 @@ home:
         fire_risk_body: "Today and tomorrow's rural-fire risk (RCM) per municipality, plotted on a map."
         climate_title: "Climate"
         climate_body: "Daily maximum temperature history for mainland Portuguese municipalities."
+    extremes:
+        title: "Current temperature extremes"
+        title_24h: "Temperature extremes (last 24h)"
+        hottest: "Hottest"
+        coldest: "Coldest"
+        all_stations: "All stations"
+        no_data: "Station data unavailable"
 
 location:
     title: "Locations · IPMA Dashboard"
