@@ -70,6 +70,48 @@ final class StationObservationRepository
     }
 
     /**
+     * Scans every timestamp in the 24h payload across every station and
+     * returns the single hottest and coldest temperature readings found,
+     * together with the station ID and the time of occurrence.
+     *
+     * Runs in a single pass over the already-cached payload — no extra
+     * API calls beyond what latestAll() already triggered.
+     *
+     * @return array{
+     *   hottest: array{station_id: int, temperature_c: float, at: DateTimeImmutable}|null,
+     *   coldest: array{station_id: int, temperature_c: float, at: DateTimeImmutable}|null,
+     * }
+     */
+    public function extremesAllStations24h(): array
+    {
+        $hottest = null;
+        $coldest = null;
+
+        foreach ($this->timestampsAsc() as $label => $at) {
+            foreach ($this->rawForTimestamp($label) as $stationId => $raw) {
+                if (!is_array($raw)) {
+                    continue;
+                }
+                $obs = StationObservation::fromArray($raw);
+                $temp = $obs->temperatureC;
+                if ($temp === null) {
+                    continue;
+                }
+                $sid = (int) $stationId;
+
+                if ($hottest === null || $temp > $hottest['temperature_c']) {
+                    $hottest = ['station_id' => $sid, 'temperature_c' => $temp, 'at' => $at];
+                }
+                if ($coldest === null || $temp < $coldest['temperature_c']) {
+                    $coldest = ['station_id' => $sid, 'temperature_c' => $temp, 'at' => $at];
+                }
+            }
+        }
+
+        return ['hottest' => $hottest, 'coldest' => $coldest];
+    }
+
+    /**
      * Ordered history (oldest → newest) of observations for a single station.
      *
      * @return list<array{at: DateTimeImmutable, observation: StationObservation}>
