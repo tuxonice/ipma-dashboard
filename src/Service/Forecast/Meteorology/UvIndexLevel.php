@@ -30,7 +30,7 @@ final class UvIndexLevel
         self::LOW       => ['label' => 'uv.level.low',       'color' => '#4caf50', 'bootstrap' => 'success', 'text' => '#ffffff'],
         self::MODERATE  => ['label' => 'uv.level.moderate',  'color' => '#ffeb3b', 'bootstrap' => 'warning', 'text' => '#212529'],
         self::HIGH      => ['label' => 'uv.level.high',      'color' => '#ff9800', 'bootstrap' => 'warning', 'text' => '#212529'],
-        self::VERY_HIGH => ['label' => 'uv.level.very_high', 'color' => '#f44336', 'bootstrap' => 'danger',  'text' => '#ffffff'],
+        self::VERY_HIGH => ['label' => 'uv.level.very_high', 'color' => '#ff1504', 'bootstrap' => 'danger',  'text' => '#161616'],
         self::EXTREME   => ['label' => 'uv.level.extreme',   'color' => '#9c27b0', 'bootstrap' => 'danger',  'text' => '#ffffff'],
     ];
 
