@@ -1,12 +1,12 @@
 # Apache Setup Guide
 
-This guide explains how to configure Apache for the IPMA Dashboard on a live server.
+This guide explains how to configure Apache for the Weather Dashboard on a live server.
 
 ## Prerequisites
 
 - Apache 2.4+ with `mod_rewrite` enabled
 - PHP 8.4 with FPM or mod_php
-- All files deployed to a web-accessible directory (e.g., `/var/www/ipma-dashboard`)
+- All files deployed to a web-accessible directory (e.g., `/var/www/weather-dashboard`)
 
 ## Enable Required Apache Modules
 
@@ -18,7 +18,7 @@ sudo systemctl restart apache2
 
 ## Virtual Host Configuration
 
-Create a new virtual host file (e.g., `/etc/apache2/sites-available/ipma-dashboard.conf`):
+Create a new virtual host file (e.g., `/etc/apache2/sites-available/weather-dashboard.conf`):
 
 ```apache
 <VirtualHost *:80>
@@ -27,10 +27,10 @@ Create a new virtual host file (e.g., `/etc/apache2/sites-available/ipma-dashboa
     ServerAdmin admin@yourdomain.com
 
     # Set document root to the public directory
-    DocumentRoot /var/www/ipma-dashboard/public
+    DocumentRoot /var/www/weather-dashboard/public
 
     # Enable .htaccess overrides and necessary options
-    <Directory /var/www/ipma-dashboard/public>
+    <Directory /var/www/weather-dashboard/public>
         AllowOverride All
         Require all granted
 
@@ -42,7 +42,7 @@ Create a new virtual host file (e.g., `/etc/apache2/sites-available/ipma-dashboa
     </Directory>
 
     # Deny access to parent directories
-    <Directory /var/www/ipma-dashboard>
+    <Directory /var/www/weather-dashboard>
         Require all denied
     </Directory>
 
@@ -55,8 +55,8 @@ Create a new virtual host file (e.g., `/etc/apache2/sites-available/ipma-dashboa
     </IfModule>
 
     # Logging
-    ErrorLog ${APACHE_LOG_DIR}/ipma-dashboard-error.log
-    CustomLog ${APACHE_LOG_DIR}/ipma-dashboard-access.log combined
+    ErrorLog ${APACHE_LOG_DIR}/weather-dashboard-error.log
+    CustomLog ${APACHE_LOG_DIR}/weather-dashboard-access.log combined
 
     # PHP-FPM Configuration (if using PHP-FPM)
     <IfModule mod_proxy_fcgi.c>
@@ -85,7 +85,7 @@ If you're using `mod_php` instead of FPM, replace the `<IfModule mod_proxy_fcgi.
 
 ```bash
 # Enable the site
-sudo a2ensite ipma-dashboard.conf
+sudo a2ensite weather-dashboard.conf
 
 # Disable default site (optional)
 sudo a2dissite 000-default.conf
@@ -101,7 +101,7 @@ sudo systemctl restart apache2
 
 ```bash
 # Navigate to your web directory
-cd /var/www/ipma-dashboard
+cd /var/www/weather-dashboard
 
 # Set proper permissions
 sudo chown -R www-data:www-data .
@@ -123,7 +123,7 @@ sudo chmod -R 755 var
 
 ## Environment Configuration
 
-Create `/var/www/ipma-dashboard/.env` with production settings:
+Create `/var/www/weather-dashboard/.env` with production settings:
 
 ```bash
 APP_ENV=prod
@@ -165,7 +165,7 @@ The virtual host configuration will be automatically updated with HTTPS redirect
 
 3. **Check logs for errors:**
    ```bash
-   tail -f /var/log/apache2/ipma-dashboard-error.log
+   tail -f /var/log/apache2/weather-dashboard-error.log
    ```
 
 ## Troubleshooting
@@ -185,7 +185,7 @@ The virtual host configuration will be automatically updated with HTTPS redirect
 
 **Solution:** Check the `.htaccess` file in `public/` directory. It should contain the routing rules. Verify:
 ```bash
-cat /var/www/ipma-dashboard/public/.htaccess
+cat /var/www/weather-dashboard/public/.htaccess
 ```
 
 ### PHP files not executing
@@ -201,7 +201,7 @@ sudo apache2ctl -M | grep proxy_fcgi
 
 **Solution:** Ensure www-data owns the files:
 ```bash
-sudo chown -R www-data:www-data /var/www/ipma-dashboard
+sudo chown -R www-data:www-data /var/www/weather-dashboard
 ```
 
 ## Performance Optimization
@@ -236,26 +236,26 @@ Add this to your `.htaccess` file for static assets:
 
 ```bash
 # Application cache errors (if configured)
-tail -f /var/www/ipma-dashboard/var/log/ipma-cache.log
+tail -f /var/www/weather-dashboard/var/log/ipma-cache.log
 
 # Apache errors
-tail -f /var/log/apache2/ipma-dashboard-error.log
+tail -f /var/log/apache2/weather-dashboard-error.log
 
 # Apache access logs
-tail -f /var/log/apache2/ipma-dashboard-access.log
+tail -f /var/log/apache2/weather-dashboard-access.log
 ```
 
 ### Clear Cache
 
 ```bash
-sudo rm -rf /var/www/ipma-dashboard/var/cache/*
-sudo chown -R www-data:www-data /var/www/ipma-dashboard/var
+sudo rm -rf /var/www/weather-dashboard/var/cache/*
+sudo chown -R www-data:www-data /var/www/weather-dashboard/var
 ```
 
 ### Update Application
 
 ```bash
-cd /var/www/ipma-dashboard
+cd /var/www/weather-dashboard
 sudo -u www-data composer install --no-dev --optimize-autoloader
 sudo systemctl restart apache2
 ```

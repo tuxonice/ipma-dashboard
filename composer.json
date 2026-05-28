@@ -1,5 +1,5 @@
 {
-    "name": "tuxonice/ipma-dashboard",
+    "name": "tuxonice/weather-dashboard",
     "description": "Weather information dashboard for Portugal powered by the IPMA API.",
     "type": "project",
     "license": "MIT",

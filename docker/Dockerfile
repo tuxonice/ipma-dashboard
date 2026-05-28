@@ -1,4 +1,4 @@
-# PHP 8.4 FPM image for the IPMA Dashboard.
+# PHP 8.4 FPM image for the Weather Dashboard.
 # Installs the extensions required by the app and the tuxonice/ipma-api client,
 # plus Composer for dependency management inside the container.
 FROM php:8.4-fpm-alpine

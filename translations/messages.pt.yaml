@@ -50,7 +50,7 @@ lang:
     en: "Inglês"
 
 nav:
-    brand: "IPMA Dashboard"
+    brand: "Painel Meteorológico"
     toggle: "Alternar navegação"
     locations: "Localidades"
     locations_sub: "Distritos e municípios"
@@ -88,10 +88,10 @@ chart:
 
 footer:
     data_source: "Dados meteorológicos fornecidos pela <a href=\"https://api.ipma.pt/\" target=\"_blank\" rel=\"noopener\">API do IPMA</a>."
-    source_code: "<a href=\"https://github.com/tuxonice/ipma-dashboard\" target=\"_blank\" rel=\"noopener\"><i class=\"bi bi-github\" aria-hidden=\"true\"></i> Código fonte</a>"
+    source_code: "<a href=\"https://github.com/tuxonice/weather-dashboard\" target=\"_blank\" rel=\"noopener\"><i class=\"bi bi-github\" aria-hidden=\"true\"></i> Código fonte</a>"
 
 home:
-    title: "IPMA Dashboard"
+    title: "Painel Meteorológico"
     intro: "Painel de informação meteorológica para Portugal, com utilização da <a href=\"https://api.ipma.pt/\" target=\"_blank\" rel=\"noopener\">API do IPMA</a>."
     disclaimer: "Este projeto não é oficial, afiliado, endossado nem mantido pelo IPMA, I.P. Serve apenas como painel visual para a API pública disponível em api.ipma.pt."
     cards:
@@ -116,7 +116,7 @@ home:
         no_data: "Dados das estações indisponíveis"
 
 location:
-    title: "Localidades · IPMA Dashboard"
+    title: "Localidades · Painel Meteorológico"
     heading: "Localidades"
     subtitle: "Escolha uma localidade para ver a previsão. Os dados são mantidos em cache local durante uma hora."
     load_error: "Não foi possível carregar as localidades do IPMA: "
@@ -171,7 +171,7 @@ location:
     altitude: "Altitude"
 
 sea:
-    title: "Estado do mar · IPMA Dashboard"
+    title: "Estado do mar · Painel Meteorológico"
     heading: "Localidades costeiras"
     subtitle: "Escolha um ponto costeiro para ver a previsão de 3 dias do estado do mar (altura de onda, período, temperatura à superfície)."
     load_error: "Não foi possível carregar localidades marítimas do IPMA: "
@@ -189,7 +189,7 @@ sea:
     sst: "Temperatura"
 
 warning:
-    title: "Avisos meteorológicos · IPMA Dashboard"
+    title: "Avisos meteorológicos · Painel Meteorológico"
     heading: "Avisos meteorológicos"
     subtitle: "Avisos meteorológicos activos emitidos pelo IPMA, agrupados por área. Os verdes (sem aviso) são ocultados."
     load_error: "Não foi possível carregar os avisos do IPMA: "
@@ -200,8 +200,8 @@ warning:
     banner_heading_many: "%count% avisos activos para esta área"
 
 station:
-    title: "Estações meteorológicas · IPMA Dashboard"
-    map_title: "Mapa de estações · IPMA Dashboard"
+    title: "Estações meteorológicas · Painel Meteorológico"
+    map_title: "Mapa de estações · Painel Meteorológico"
     heading: "Estações meteorológicas"
     subtitle: "Últimas leituras em tempo real da rede de estações meteorológicas do IPMA."
     table: "Tabela"
@@ -239,7 +239,7 @@ station:
     map_legend: "Gama de temperatura: %min% °C → %max% °C. Os marcadores são coloridos por temperatura (azul frio → vermelho quente); marcadores cinzentos indicam que não havia leitura de temperatura."
 
 fire_risk:
-    title: "Risco de incêndio · IPMA Dashboard"
+    title: "Risco de incêndio · Painel Meteorológico"
     heading: "Previsão de risco de incêndio"
     subtitle: "Risco diário rural de incêndio (RCM) por município do IPMA."
     forecast_for: "Previsão para %date%."
@@ -258,7 +258,7 @@ fire_risk:
         maximum: "Máximo"
 
 climate:
-    title: "Clima · IPMA Dashboard"
+    title: "Clima · Painel Meteorológico"
     heading: "Observações climáticas"
     subtitle: "Séries diárias publicadas pelo IPMA por município (CSV). A base de dados abrange apenas o continente."
     filter_placeholder: "Filtrar por nome de município…"
@@ -328,7 +328,7 @@ climate:
     aria_pdsi_trend: "Tendência do PDSI mensal"
 
 uv:
-    title: "Índice UV · IPMA Dashboard"
+    title: "Índice UV · Painel Meteorológico"
     heading: "Índice ultravioleta (UV)"
     subtitle: "Previsão a 5 dias do pico do índice UV por localidade."
     peak_interval: "Intervalo do pico: %interval% UTC."
@@ -352,7 +352,7 @@ uv:
         extreme: "Ficar em espaços interiores ao meio-dia; protecção total no exterior."
 
 seismic:
-    title: "Actividade sísmica · IPMA Dashboard"
+    title: "Actividade sísmica · Painel Meteorológico"
     heading: "Actividade sísmica"
     subtitle: "Sismos reportados pelo IPMA nos últimos ~30 dias para %area%."
     last_activity: "Última actividade em %datetime% UTC."
@@ -386,7 +386,7 @@ seismic:
         major: "Maior"
 
 outlook:
-    title: "Panorama da previsão · IPMA Dashboard"
+    title: "Panorama da previsão · Painel Meteorológico"
     heading: "Panorama da previsão"
     subtitle: "Previsão diária para todas as localidades do IPMA."
     forecast_for: "Previsão para %date%."
@@ -409,7 +409,7 @@ outlook:
         day_after: "Depois de amanhã"
 
 bivalves:
-    title: "Apanha de bivalves · IPMA Dashboard"
+    title: "Apanha de bivalves · Painel Meteorológico"
     heading: "Interdições à apanha de bivalves"
     subtitle: "Mapa diário do IPMA com as zonas de produção de moluscos bivalves e o seu estado actual de apanha (aberta ou interdita)."
     load_error: "Não foi possível carregar o feed de bivalves: "
@@ -521,7 +521,7 @@ weather:
         3: "Forte"
 
 terms:
-    title: "Termos e condições · IPMA Dashboard"
+    title: "Termos e condições · Painel Meteorológico"
     heading: "Termos e condições"
     last_updated: "Última atualização: %date%"
     section_usage_title: "Utilização do serviço"

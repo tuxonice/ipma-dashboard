@@ -50,7 +50,7 @@ lang:
     en: "English"
 
 nav:
-    brand: "IPMA Dashboard"
+    brand: "Weather Dashboard"
     toggle: "Toggle navigation"
     locations: "Locations"
     locations_sub: "Districts and municipalities"
@@ -88,10 +88,10 @@ chart:
 
 footer:
     data_source: "Meteorological data provided by <a href=\"https://api.ipma.pt/\" target=\"_blank\" rel=\"noopener\">IPMA Open API</a>."
-    source_code: "<a href=\"https://github.com/tuxonice/ipma-dashboard\" target=\"_blank\" rel=\"noopener\"><i class=\"bi bi-github\" aria-hidden=\"true\"></i> Source code</a>"
+    source_code: "<a href=\"https://github.com/tuxonice/meteo-dashboard\" target=\"_blank\" rel=\"noopener\"><i class=\"bi bi-github\" aria-hidden=\"true\"></i> Source code</a>"
 
 home:
-    title: "IPMA Dashboard"
+    title: "Weather Dashboard"
     intro: "A weather information dashboard for Portugal, powered by the <a href=\"https://api.ipma.pt/\" target=\"_blank\" rel=\"noopener\">IPMA Open API</a>"
     disclaimer: "This project is unofficial and is not affiliated with, endorsed by, or maintained by IPMA, I.P. It only provides a visual dashboard for the public API available at api.ipma.pt."
     cards:
@@ -116,7 +116,7 @@ home:
         no_data: "Station data unavailable"
 
 location:
-    title: "Locations · IPMA Dashboard"
+    title: "Locations · Weather Dashboard"
     heading: "Locations"
     subtitle: "Pick a location to see its forecast. Data is cached locally for one hour."
     load_error: "Could not load locations from IPMA: "
@@ -171,7 +171,7 @@ location:
     altitude: "Altitude"
 
 sea:
-    title: "Sea state · IPMA Dashboard"
+    title: "Sea state · Weather Dashboard"
     heading: "Coastal locations"
     subtitle: "Pick a coastal point to see the 3-day sea-state forecast (wave height, period, sea-surface temperature)."
     load_error: "Could not load sea locations from IPMA: "
@@ -189,7 +189,7 @@ sea:
     sst: "SST"
 
 warning:
-    title: "Weather warnings · IPMA Dashboard"
+    title: "Weather warnings · Weather Dashboard"
     heading: "Weather warnings"
     subtitle: "Active meteorological warnings issued by IPMA, grouped by warning area. Green (no warning) entries are hidden."
     load_error: "Could not load warnings from IPMA: "
@@ -200,8 +200,8 @@ warning:
     banner_heading_many: "%count% active warnings for this area"
 
 station:
-    title: "Weather stations · IPMA Dashboard"
-    map_title: "Station map · IPMA Dashboard"
+    title: "Weather stations · Weather Dashboard"
+    map_title: "Station map · Weather Dashboard"
     heading: "Weather stations"
     subtitle: "Latest live readings from IPMA's meteorological station network."
     table: "Table"
@@ -239,7 +239,7 @@ station:
     map_legend: "Temperature range: %min% °C → %max% °C. Markers are coloured by temperature (blue cold → red hot); grey markers mean no temperature reading was available."
 
 fire_risk:
-    title: "Fire risk · IPMA Dashboard"
+    title: "Fire risk · Weather Dashboard"
     heading: "Fire risk forecast"
     subtitle: "IPMA's daily rural-fire risk (RCM) per municipality."
     forecast_for: "Forecast for %date%."
@@ -258,7 +258,7 @@ fire_risk:
         maximum: "Maximum"
 
 climate:
-    title: "Climate · IPMA Dashboard"
+    title: "Climate · Weather Dashboard"
     heading: "Climate observations"
     subtitle: "Daily climate series published by IPMA per municipality (CSV). Dataset currently covers mainland Portugal only."
     filter_placeholder: "Filter by municipality name…"
@@ -328,7 +328,7 @@ climate:
     aria_pdsi_trend: "Monthly PDSI trend"
 
 uv:
-    title: "UV index · IPMA Dashboard"
+    title: "UV index · Weather Dashboard"
     heading: "Ultraviolet (UV) index"
     subtitle: "5-day forecast of the peak UV index per location."
     peak_interval: "Peak interval: %interval% UTC."
@@ -352,7 +352,7 @@ uv:
         extreme: "Stay indoors during midday; full protection outdoors."
 
 seismic:
-    title: "Seismic activity · IPMA Dashboard"
+    title: "Seismic activity · Weather Dashboard"
     heading: "Seismic activity"
     subtitle: "Earthquakes reported by IPMA over the last ~30 days for %area%."
     last_activity: "Last activity %datetime% UTC."
@@ -386,7 +386,7 @@ seismic:
         major: "Major"
 
 outlook:
-    title: "Forecast outlook · IPMA Dashboard"
+    title: "Forecast outlook · Weather Dashboard"
     heading: "Forecast outlook"
     subtitle: "Portugal-wide daily forecast for every IPMA location."
     forecast_for: "Forecast for %date%."
@@ -409,7 +409,7 @@ outlook:
         day_after: "Day after tomorrow"
 
 bivalves:
-    title: "Bivalve harvesting · IPMA Dashboard"
+    title: "Bivalve harvesting · Weather Dashboard"
     heading: "Bivalve harvesting interdictions"
     subtitle: "IPMA's daily map of bivalve mollusc production zones with their current harvesting status (open or interdicted)."
     load_error: "Could not load the bivalve feed: "
@@ -521,7 +521,7 @@ weather:
         3: "Strong"
 
 terms:
-    title: "Terms and conditions · IPMA Dashboard"
+    title: "Terms and conditions · Weather Dashboard"
     heading: "Terms and conditions"
     last_updated: "Last updated: %date%"
     section_usage_title: "Use of the service"

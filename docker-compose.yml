@@ -1,11 +1,11 @@
-# Local development stack for the IPMA Dashboard.
+# Local development stack for the Weather Dashboard.
 # Run `docker compose up --build` to start the app on http://localhost:8080
 services:
   app:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    container_name: ipma-dashboard-app
+    container_name: weather-dashboard-app
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html:cached
@@ -14,7 +14,7 @@ services:
 
   web:
     image: nginx:1.27-alpine
-    container_name: ipma-dashboard-web
+    container_name: weather-dashboard-web
     depends_on:
       - app
     ports:

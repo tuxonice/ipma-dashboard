@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ipma-dashboard.tlab.pt/sitemap.xml
+Sitemap: https://weather-dashboard.example.com/sitemap.xml

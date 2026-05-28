@@ -1,6 +1,6 @@
 {
-    "name": "IPMA Dashboard",
-    "short_name": "IPMA",
+    "name": "Weather Dashboard",
+    "short_name": "Weather",
     "description": "Portugal weather dashboard powered by IPMA data",
     "start_url": "/",
     "display": "standalone",

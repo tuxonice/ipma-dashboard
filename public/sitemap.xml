@@ -4,208 +4,208 @@
 
     <!-- Home -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en"/>
+        <loc>https://weather-dashboard.example.com/pt</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en"/>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en"/>
+        <loc>https://weather-dashboard.example.com/en</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en"/>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
 
     <!-- Locations -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt/localidades</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/localidades"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/locations"/>
+        <loc>https://weather-dashboard.example.com/pt/localidades</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/localidades"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/locations"/>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en/locations</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/localidades"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/locations"/>
+        <loc>https://weather-dashboard.example.com/en/locations</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/localidades"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/locations"/>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
 
     <!-- Warnings -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt/avisos</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/avisos"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/warnings"/>
+        <loc>https://weather-dashboard.example.com/pt/avisos</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/avisos"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/warnings"/>
         <changefreq>hourly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en/warnings</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/avisos"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/warnings"/>
+        <loc>https://weather-dashboard.example.com/en/warnings</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/avisos"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/warnings"/>
         <changefreq>hourly</changefreq>
         <priority>0.9</priority>
     </url>
 
     <!-- Sea state -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt/estado-do-mar</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/estado-do-mar"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/sea-state"/>
+        <loc>https://weather-dashboard.example.com/pt/estado-do-mar</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/estado-do-mar"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/sea-state"/>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en/sea-state</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/estado-do-mar"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/sea-state"/>
+        <loc>https://weather-dashboard.example.com/en/sea-state</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/estado-do-mar"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/sea-state"/>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
 
     <!-- Stations -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt/estacoes-meteorologicas</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/estacoes-meteorologicas"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/weather-stations"/>
+        <loc>https://weather-dashboard.example.com/pt/estacoes-meteorologicas</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/estacoes-meteorologicas"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/weather-stations"/>
         <changefreq>hourly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en/weather-stations</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/estacoes-meteorologicas"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/weather-stations"/>
+        <loc>https://weather-dashboard.example.com/en/weather-stations</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/estacoes-meteorologicas"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/weather-stations"/>
         <changefreq>hourly</changefreq>
         <priority>0.8</priority>
     </url>
 
     <!-- Fire risk -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt/risco-incendio</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/risco-incendio"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/fire-risk"/>
+        <loc>https://weather-dashboard.example.com/pt/risco-incendio</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/risco-incendio"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/fire-risk"/>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en/fire-risk</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/risco-incendio"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/fire-risk"/>
+        <loc>https://weather-dashboard.example.com/en/fire-risk</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/risco-incendio"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/fire-risk"/>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
 
     <!-- Outlook -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt/previsao</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/previsao"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/outlook"/>
+        <loc>https://weather-dashboard.example.com/pt/previsao</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/previsao"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/outlook"/>
         <changefreq>daily</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en/outlook</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/previsao"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/outlook"/>
+        <loc>https://weather-dashboard.example.com/en/outlook</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/previsao"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/outlook"/>
         <changefreq>daily</changefreq>
         <priority>0.7</priority>
     </url>
 
     <!-- UV -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt/risco-de-uv</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/risco-de-uv"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/uv-risk"/>
+        <loc>https://weather-dashboard.example.com/pt/risco-de-uv</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/risco-de-uv"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/uv-risk"/>
         <changefreq>daily</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en/uv-risk</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/risco-de-uv"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/uv-risk"/>
+        <loc>https://weather-dashboard.example.com/en/uv-risk</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/risco-de-uv"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/uv-risk"/>
         <changefreq>daily</changefreq>
         <priority>0.7</priority>
     </url>
 
     <!-- Climate -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt/clima</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/clima"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/climate"/>
+        <loc>https://weather-dashboard.example.com/pt/clima</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/clima"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/climate"/>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en/climate</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/clima"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/climate"/>
+        <loc>https://weather-dashboard.example.com/en/climate</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/clima"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/climate"/>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
 
     <!-- Seismic -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt/informacao-sismica</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/informacao-sismica"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/seismic-information"/>
+        <loc>https://weather-dashboard.example.com/pt/informacao-sismica</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/informacao-sismica"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/seismic-information"/>
         <changefreq>hourly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en/seismic-information</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/informacao-sismica"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/seismic-information"/>
+        <loc>https://weather-dashboard.example.com/en/seismic-information</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/informacao-sismica"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/seismic-information"/>
         <changefreq>hourly</changefreq>
         <priority>0.6</priority>
     </url>
 
     <!-- Bivalves -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt/bivalves</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/bivalves"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/bivalves"/>
+        <loc>https://weather-dashboard.example.com/pt/bivalves</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/bivalves"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/bivalves"/>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en/bivalves</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/bivalves"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/bivalves"/>
+        <loc>https://weather-dashboard.example.com/en/bivalves</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/bivalves"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/bivalves"/>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
     </url>
 
     <!-- Glossary -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt/glossario</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/glossario"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/glossary"/>
+        <loc>https://weather-dashboard.example.com/pt/glossario</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/glossario"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/glossary"/>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en/glossary</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/glossario"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/glossary"/>
+        <loc>https://weather-dashboard.example.com/en/glossary</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/glossario"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/glossary"/>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
 
     <!-- Terms -->
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/pt/termos</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/termos"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/terms"/>
+        <loc>https://weather-dashboard.example.com/pt/termos</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/termos"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/terms"/>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ipma-dashboard.tlab.pt/en/terms</loc>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://ipma-dashboard.tlab.pt/pt/termos"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ipma-dashboard.tlab.pt/en/terms"/>
+        <loc>https://weather-dashboard.example.com/en/terms</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://weather-dashboard.example.com/pt/termos"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://weather-dashboard.example.com/en/terms"/>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
