@@ -21,6 +21,8 @@ use App\Controller\Services\LocationController;
 use App\Service\Forecast\Meteorology\FireRiskRepository;
 use App\Service\Forecast\Meteorology\UvIndexRepository;
 use App\Service\Forecast\Oceanography\SeaForecastRepository;
+use App\Service\Forecast\Oceanography\TideCalculator;
+use App\Service\Forecast\Oceanography\TideDailyRange;
 use App\Service\Forecast\Warnings\WarningRepository;
 use App\Service\ForecastRepository;
 use App\Service\IpmaConnectorFactory;
@@ -156,6 +158,14 @@ final class ContainerFactory
         $container->register(SeaForecastRepository::class, SeaForecastRepository::class)
             ->addArgument(new Reference(CacheInterface::class));
 
+        // Tide constants are bundled per year (currently 2026 only).
+        $container->register(TideCalculator::class, TideCalculator::class)
+            ->setFactory([TideCalculator::class, 'fromYear'])
+            ->addArgument(2026);
+
+        $container->register(TideDailyRange::class, TideDailyRange::class)
+            ->addArgument(new Reference(TideCalculator::class));
+
         $container->register(StationRepository::class, StationRepository::class)
             ->addArgument(new Reference(CacheInterface::class));
 
@@ -210,7 +220,8 @@ final class ContainerFactory
             ->setPublic(true)
             ->addArgument(new Reference('twig'))
             ->addArgument(new Reference(SeaLocationRepository::class))
-            ->addArgument(new Reference(SeaForecastRepository::class));
+            ->addArgument(new Reference(SeaForecastRepository::class))
+            ->addArgument(new Reference(TideDailyRange::class));
 
         $container->register(StationController::class, StationController::class)
             ->setPublic(true)
