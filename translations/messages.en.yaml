@@ -187,6 +187,11 @@ sea:
     direction: "Direction"
     total_sea: "Total sea"
     sst: "SST"
+    tide: "Tide"
+    tide_high: "High tide"
+    tide_low: "Low tide"
+    tide_extrema_heading: "High and low tides · next 3 days"
+    tide_disclaimer: "Approximate tide (4-constituent harmonic model), referenced to chart datum (zero hidrográfico). Not a substitute for the official Instituto Hidrográfico tide tables."
 
 warning:
     title: "Weather warnings · Weather Dashboard"

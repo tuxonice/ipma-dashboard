@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Controller\Forecast\Oceanography;
 
 use App\Service\Forecast\Oceanography\SeaForecastRepository;
+use App\Service\Forecast\Oceanography\TideDailyRange;
+use App\Service\Forecast\Oceanography\TideExtrema;
 use App\Service\Services\LocationRepository;
 use App\Service\Services\SeaLocationRepository;
 use App\Service\WeatherDictionary;
+use DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tlab\IpmaApi\Exception\IpmaApiException;
@@ -26,6 +29,7 @@ final class SeaController
         private readonly Environment $twig,
         private readonly SeaLocationRepository $seaLocations,
         private readonly SeaForecastRepository $seaForecasts,
+        private readonly TideDailyRange $tideRange,
     ) {
     }
 
@@ -74,14 +78,28 @@ final class SeaController
             throw new NotFoundHttpException(sprintf('Sea location %d not found.', $globalIdLocal));
         }
 
+        $tz = new \DateTimeZone(LocationRepository::regionTimezone($location->idRegion));
+
         $days = [];
         $updatedAt = null;
         $forecastError = null;
+        $tideChartSeries = [];
 
         try {
             foreach ($this->seaForecasts->forLocation($globalIdLocal) as $day) {
                 $record = $day->record;
                 $updatedAt = $day->updatedAt;
+
+                $localMidnight = new DateTimeImmutable($day->forecastDate->format('Y-m-d') . ' 00:00:00', $tz);
+                $dayTide = $this->tideRange->forDay(
+                    $location->latitude,
+                    $location->longitude,
+                    $localMidnight,
+                );
+                foreach ($dayTide['series'] as $point) {
+                    $tideChartSeries[] = $point;
+                }
+
                 $days[] = [
                     'forecast_date' => $day->forecastDate,
                     'wave_dir' => $record->predWaveDir,
@@ -100,7 +118,15 @@ final class SeaController
             $forecastError = $e->getMessage();
         }
 
-        $tz = new \DateTimeZone(LocationRepository::regionTimezone($location->idRegion));
+        $tideExtremaByDay = [];
+        foreach (TideExtrema::findInSeries($tideChartSeries) as $ex) {
+            $localTime = (new DateTimeImmutable('@' . intdiv($ex['t'], 1000)))->setTimezone($tz);
+            $tideExtremaByDay[$localTime->format('Y-m-d')][] = [
+                'time' => $localTime,
+                'height' => $ex['h'],
+                'type' => $ex['type'],
+            ];
+        }
 
         $html = $this->twig->render('Forecast/Oceanography/sea.show.html.twig', [
             'location' => $location,
@@ -110,6 +136,8 @@ final class SeaController
             'updated_at' => $updatedAt instanceof \DateTimeImmutable ? $updatedAt->setTimezone($tz) : null,
             'error' => null,
             'forecast_error' => $forecastError,
+            'tide_chart_series' => $tideChartSeries !== [] ? $tideChartSeries : null,
+            'tide_extrema_by_day' => $tideExtremaByDay !== [] ? $tideExtremaByDay : null,
         ]);
 
         return new Response($html);
