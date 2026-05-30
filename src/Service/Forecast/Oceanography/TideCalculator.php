@@ -48,16 +48,17 @@ final class TideCalculator
     }
 
     /**
-     * Load constants for the given year from the bundled JSON tables.
+     * Load constants from an explicit file path supplied at runtime (e.g. via
+     * the TIDE_CONSTANTS_FILE environment variable).
+     *
+     * The file must be a JSON object whose top-level keys are port slugs.
+     * current UTC year is used.
      */
-    public static function fromYear(int $year, ?string $dataDir = null): self
+    public static function fromFile(string $path): self
     {
-        $dataDir ??= __DIR__ . '/data';
-        $path = sprintf('%s/tide_constants_%d.json', rtrim($dataDir, '/'), $year);
-
         if (!is_file($path)) {
             throw new InvalidArgumentException(
-                sprintf('No tide constants available for year %d (looked in %s).', $year, $path),
+                sprintf('Tide constants file not found: %s', $path),
             );
         }
 
@@ -67,15 +68,37 @@ final class TideCalculator
         }
 
         try {
-            /** @var array<string, array{name: string, lat: float, lon: float, z0: float, constants: array<string, array{H: float, G: float}>}> $ports */
-            $ports = json_decode($raw, true, flags: JSON_THROW_ON_ERROR);
+            /** @var array<string, mixed> $decoded */
+            $decoded = json_decode($raw, true, flags: JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             throw new RuntimeException(sprintf('Malformed tide constants in %s: %s', $path, $e->getMessage()), 0, $e);
         }
 
+        $year = isset($decoded['year']) && is_int($decoded['year'])
+            ? $decoded['year']
+            : (int) (new DateTimeImmutable('now', new \DateTimeZone('UTC')))->format('Y');
+
+        unset($decoded['year']);
+
+        /** @var array<string, array{name: string, lat: float, lon: float, z0: float, constants: array<string, array{H: float, G: float}>}> $ports */
+        $ports = $decoded;
+
         $epoch = new DateTimeImmutable(sprintf('%d-01-01T00:00:00Z', $year));
 
         return new self($ports, $epoch);
+    }
+
+    /**
+     * Load constants for the given year from a directory of bundled JSON files.
+     * Intended for tests and local development; production should use fromFile()
+     * with a path supplied via the TIDE_CONSTANTS_FILE environment variable.
+     */
+    public static function fromYear(int $year, ?string $dataDir = null): self
+    {
+        $dataDir ??= __DIR__ . '/data';
+        $path = sprintf('%s/tide_constants_%d.json', rtrim($dataDir, '/'), $year);
+
+        return self::fromFile($path);
     }
 
     /**
