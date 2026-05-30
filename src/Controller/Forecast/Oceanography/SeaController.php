@@ -29,7 +29,7 @@ final class SeaController
         private readonly Environment $twig,
         private readonly SeaLocationRepository $seaLocations,
         private readonly SeaForecastRepository $seaForecasts,
-        private readonly TideDailyRange $tideRange,
+        private readonly ?TideDailyRange $tideRange,
     ) {
     }
 
@@ -91,13 +91,15 @@ final class SeaController
                 $updatedAt = $day->updatedAt;
 
                 $localMidnight = new DateTimeImmutable($day->forecastDate->format('Y-m-d') . ' 00:00:00', $tz);
-                $dayTide = $this->tideRange->forDay(
-                    $location->latitude,
-                    $location->longitude,
-                    $localMidnight,
-                );
-                foreach ($dayTide['series'] as $point) {
-                    $tideChartSeries[] = $point;
+                if ($this->tideRange !== null) {
+                    $dayTide = $this->tideRange->forDay(
+                        $location->latitude,
+                        $location->longitude,
+                        $localMidnight,
+                    );
+                    foreach ($dayTide['series'] as $point) {
+                        $tideChartSeries[] = $point;
+                    }
                 }
 
                 $days[] = [

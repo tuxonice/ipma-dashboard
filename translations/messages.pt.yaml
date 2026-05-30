@@ -191,7 +191,7 @@ sea:
     tide_high: "Preia-mar"
     tide_low: "Baixa-mar"
     tide_extrema_heading: "Preia-mar e baixa-mar · próximos 3 dias"
-    tide_disclaimer: "Maré aproximada (modelo harmónico com 4 constituintes), referida ao zero hidrográfico. Não substitui as tabelas oficiais do Instituto Hidrográfico."
+    tide_disclaimer: "Maré aproximada (modelo harmónico com 4 constituintes), referida ao zero hidrográfico. Não substitui uma fonte de dados oficial"
 
 warning:
     title: "Avisos meteorológicos · Painel Meteorológico"

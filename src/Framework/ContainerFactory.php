@@ -158,13 +158,21 @@ final class ContainerFactory
         $container->register(SeaForecastRepository::class, SeaForecastRepository::class)
             ->addArgument(new Reference(CacheInterface::class));
 
-        // Tide constants are bundled per year (currently 2026 only).
-        $container->register(TideCalculator::class, TideCalculator::class)
-            ->setFactory([TideCalculator::class, 'fromYear'])
-            ->addArgument(2026);
+        // Tide constants are loaded from an external file whose path is
+        // supplied via the TIDE_CONSTANTS_FILE environment variable.
+        // The file is NOT bundled in the repository for licence reasons.
+        // When the variable is absent or points to a non-existent file,
+        // tide-related services are simply not registered and the sea page
+        // will render without the tide panel.
+        $tideConstantsFile = $_ENV['TIDE_CONSTANTS_FILE'] ?? $_SERVER['TIDE_CONSTANTS_FILE'] ?? null;
+        if (is_string($tideConstantsFile) && $tideConstantsFile !== '') {
+            $container->register(TideCalculator::class, TideCalculator::class)
+                ->setFactory([TideCalculator::class, 'fromFile'])
+                ->addArgument($tideConstantsFile);
 
-        $container->register(TideDailyRange::class, TideDailyRange::class)
-            ->addArgument(new Reference(TideCalculator::class));
+            $container->register(TideDailyRange::class, TideDailyRange::class)
+                ->addArgument(new Reference(TideCalculator::class));
+        }
 
         $container->register(StationRepository::class, StationRepository::class)
             ->addArgument(new Reference(CacheInterface::class));
@@ -221,7 +229,9 @@ final class ContainerFactory
             ->addArgument(new Reference('twig'))
             ->addArgument(new Reference(SeaLocationRepository::class))
             ->addArgument(new Reference(SeaForecastRepository::class))
-            ->addArgument(new Reference(TideDailyRange::class));
+            ->addArgument($container->has(TideDailyRange::class)
+                ? new Reference(TideDailyRange::class)
+                : null);
 
         $container->register(StationController::class, StationController::class)
             ->setPublic(true)

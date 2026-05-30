@@ -191,7 +191,7 @@ sea:
     tide_high: "High tide"
     tide_low: "Low tide"
     tide_extrema_heading: "High and low tides · next 3 days"
-    tide_disclaimer: "Approximate tide (4-constituent harmonic model), referenced to chart datum (zero hidrográfico). Not a substitute for the official Instituto Hidrográfico tide tables."
+    tide_disclaimer: "Approximate tide (4-constituent harmonic model), referenced to chart datum (zero hidrográfico). Not a substitute for an official tide tables source."
 
 warning:
     title: "Weather warnings · Weather Dashboard"

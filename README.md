@@ -137,6 +137,13 @@ As required by IPMA's terms of use:
 
 This dashboard is not affiliated with or endorsed by IPMA.
 
+### Tide calculation
+Tide heights and daily extrema are computed locally using a 4-constituent harmonic
+model (M2, S2, K1, O1). Results are indicative and not intended for navigation.
+
+See [`docu/tide-calculation.md`](docu/tide-calculation.md) for a full explanation
+of the method, the harmonic formula, equilibrium arguments and accuracy limits.
+
 ### Astronomical data
 Sun and moon data (rise/set times, positions, phase, illumination) is calculated
 locally using [tuxonice/suncalc-php](https://github.com/tuxonice/suncalc-php),
