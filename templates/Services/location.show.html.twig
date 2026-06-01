@@ -259,6 +259,19 @@
                                     <dd class="col-6 col-sm-6 col-md-6 col-lg-7 pb-2">{{ moon_distance_km|number_format(0) }} km</dd>
                                 {% endif %}
                             </dl>
+                            {% if upcoming_moon_phases is not empty %}
+                                <div class="w-100 mt-2">
+                                    <h3 class="h6 text-body-secondary mb-2">{{ 'location.moon_upcoming'|trans }}</h3>
+                                    <ul class="list-unstyled mb-0 small">
+                                        {% for phase in upcoming_moon_phases %}
+                                            <li class="d-flex justify-content-between align-items-center py-1">
+                                                <span><span class="me-2" aria-hidden="true">{{ phase.emoji }}</span>{{ phase.key|trans }}</span>
+                                                <span class="text-body-secondary">{{ ('common.weekday_short.' ~ phase.datetime|date('N', timezone))|trans }}, {{ phase.datetime|date('j', timezone) }} {{ ('common.month_short.' ~ phase.datetime|date('n', timezone))|trans }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
                         </div>
                         {% if moon_azimuth_deg is not null %}
                             <div class="border-top px-3 py-2 small text-body-secondary">

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Services;
 
+use App\Service\Astronomy\MoonPhase;
 use App\Service\Forecast\Warnings\AwarenessLevel;
 use App\Service\Forecast\Warnings\WarningRepository;
 use App\Service\ForecastRepository;
@@ -95,6 +96,7 @@ final class LocationController
                 'sun_altitude_deg' => null,
                 'moonrise' => null,
                 'moonset' => null,
+                'upcoming_moon_phases' => [],
             ]);
 
             return new Response($html, Response::HTTP_BAD_GATEWAY);
@@ -195,6 +197,16 @@ final class LocationController
         $moonrise  = isset($moonTimes['moonrise']) ? (new DateTimeImmutable('@' . $moonTimes['moonrise']->getTimestamp()))->setTimezone($tz) : null;
         $moonset   = isset($moonTimes['moonset'])  ? (new DateTimeImmutable('@' . $moonTimes['moonset']->getTimestamp()))->setTimezone($tz)  : null;
 
+        $nowUtc = new DateTimeImmutable('@' . $nowLocal->getTimestamp());
+        $upcomingMoonPhases = array_map(
+            static fn (array $phase): array => [
+                'key'      => MoonPhase::translationKey($phase['type']),
+                'emoji'    => MoonPhase::emoji($phase['type']),
+                'datetime' => $phase['instant']->setTimezone($tz),
+            ],
+            MoonPhase::nextPrincipalPhases($nowUtc, 4),
+        );
+
         $html = $this->twig->render('Services/location.show.html.twig', [
             'location' => $location,
             'region_label' => LocationRepository::regionLabel($location->idRegion),
@@ -227,6 +239,7 @@ final class LocationController
             'sun_altitude_deg' => $sunAltitudeDeg,
             'moonrise' => $moonrise,
             'moonset' => $moonset,
+            'upcoming_moon_phases' => $upcomingMoonPhases,
         ]);
 
         return new Response($html);

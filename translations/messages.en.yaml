@@ -162,6 +162,7 @@ location:
     moon_phase_waning_gibbous: "Waning gibbous"
     moon_phase_last_quarter: "Last quarter"
     moon_phase_waning_crescent: "Waning crescent"
+    moon_upcoming: "Upcoming phases"
     moonrise: "Moonrise"
     moonset: "Moonset"
     moon_distance: "Distance"
