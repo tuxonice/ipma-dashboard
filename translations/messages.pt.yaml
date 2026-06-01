@@ -162,6 +162,7 @@ location:
     moon_phase_waning_gibbous: "Gibosa minguante"
     moon_phase_last_quarter: "Quarto minguante"
     moon_phase_waning_crescent: "Minguante"
+    moon_upcoming: "Próximas fases"
     moonrise: "Nascer da lua"
     moonset: "Pôr da lua"
     moon_distance: "Distância"
